@@ -1,0 +1,16 @@
+README.md
+pyproject.toml
+facg/__init__.py
+facg/__main__.py
+facg/backend.py
+facg/config.py
+facg/io.py
+facg/optimizer.py
+facg/prewhiten.py
+facg/spectrum.py
+facg.egg-info/PKG-INFO
+facg.egg-info/SOURCES.txt
+facg.egg-info/dependency_links.txt
+facg.egg-info/entry_points.txt
+facg.egg-info/requires.txt
+facg.egg-info/top_level.txt

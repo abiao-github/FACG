@@ -1,0 +1,51 @@
+SigSpec test data frequency record
+File naming style: ProjectName.dat
+Each .dat file has two columns: time flux
+Number of data points per .dat file: 5000
+Frequency unit: d^-1
+The .dat files have no header.
+
+Dataset: SigSpec_Test_01
+Data file: SigSpec_Test_01.dat
+Input frequencies d^-1:
+  f1 = 10.32911290
+  f2 = 22.94579241
+  f3 = 31.91524280
+  f4 = 32.99197341
+  f5 = 34.37715409
+Input amplitudes:
+  A1 = 0.00096277
+  A2 = 0.00226688
+  A3 = 0.00198402
+  A4 = 0.00140222
+  A5 = 0.00252473
+
+Dataset: SigSpec_Test_02
+Data file: SigSpec_Test_02.dat
+Input frequencies d^-1:
+  f1 = 19.13490189
+  f2 = 19.75045803
+  f3 = 21.05837334
+  f4 = 35.22788534
+  f5 = 43.05084840
+Input amplitudes:
+  A1 = 0.00272156
+  A2 = 0.00166696
+  A3 = 0.00088055
+  A4 = 0.00210843
+  A5 = 0.00261876
+
+Dataset: SigSpec_Test_03
+Data file: SigSpec_Test_03.dat
+Input frequencies d^-1:
+  f1 = 5.15901797
+  f2 = 11.21351026
+  f3 = 11.69683809
+  f4 = 42.59229227
+  f5 = 45.60837919
+Input amplitudes:
+  A1 = 0.00361659
+  A2 = 0.00107993
+  A3 = 0.00201194
+  A4 = 0.00148065
+  A5 = 0.00207340
