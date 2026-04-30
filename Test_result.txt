@@ -1,0 +1,218 @@
+facg --testdata
+正在生成 FACG 与 SigSpec 性能对比测试数据 (SigSpec 预估处理时间约为 1-2 分钟)...
+
+✅ 生成完毕: ./FACG_Test_01.dat (点数: 6000, 信号数: 6, 时间跨度: 120)
+✅ 生成完毕: ./FACG_Test_02.dat (点数: 7000, 信号数: 5, 时间跨度: 250)
+✅ 生成完毕: ./FACG_Test_03.dat (点数: 8000, 信号数: 7, 时间跨度: 100)
+
+🎉 生成结束。
+📄 真实信号参数已记录至: ./frequency_record.txt
+建议先使用 FACG 运行（极速出结果），再使用 SigSpec 运行以体验性能差距。
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % mv frequency_record.txt ..
+
+
+下面是在mac电脑上测试的结果：
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % facg
+  ✓ GPU: Apple Metal (PyTorch 2.11.0)
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (Metal)
+  Input   : /Users/abiao/Documents/资料存档/软件工具/gitrepo/FACG/FACG_testdata/FACG_Test_01.dat
+  Output  : /Users/abiao/Documents/资料存档/软件工具/gitrepo/FACG/FACG_testdata/FACG_Test_01
+=================================================================
+  Data points   : 6000
+  Time base     : 119.881950
+  Rayleigh res  : 0.008341539
+  Freq step     : 0.000417077
+  Freq range    : [0.008342, 36.221385]
+  Nyquist coeff : 36.221385
+  Oversampling  : 20.0
+  # frequencies : 86827
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    1.229995535  sig   442.0708  amp  1.003554510  phase   0.501  rms  0.984102982  csig   442.0708  [0.57s]
+  iter    2: freq    3.449902527  sig   410.9088  amp  0.782380207  phase   1.257  rms  0.814171361  csig   852.9797  [0.44s]
+  iter    3: freq    5.669869657  sig   339.1292  amp  0.586589486  phase  -1.011  rms  0.700202142  csig  1192.1088  [0.44s]
+  iter    4: freq   10.100065317  sig   329.5982  amp  0.496581346  phase   0.769  rms  0.605123445  csig  1521.7070  [0.45s]
+  iter    5: freq   15.499980449  sig   286.4196  amp  0.402880109  phase   1.834  rms  0.534398618  csig  1808.1266  [0.45s]
+  iter    6: freq   22.799831531  sig   202.4495  amp  0.301479226  phase  -0.575  rms  0.490981493  csig  2010.5760  [0.45s]
+  iter    7: max sig = 3.7573 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 6
+  Total elapsed time   : 4.778 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (Metal)
+  Input   : /Users/abiao/Documents/资料存档/软件工具/gitrepo/FACG/FACG_testdata/FACG_Test_02.dat
+  Output  : /Users/abiao/Documents/资料存档/软件工具/gitrepo/FACG/FACG_testdata/FACG_Test_02
+=================================================================
+  Data points   : 7000
+  Time base     : 249.953344
+  Rayleigh res  : 0.004000747
+  Freq step     : 0.000200037
+  Freq range    : [0.004001, 20.362452]
+  Nyquist coeff : 20.362452
+  Oversampling  : 20.0
+  # frequencies : 101775
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    0.123445925  sig   584.2768  amp  1.526685108  phase  -0.009  rms  1.370696434  csig   584.2768  [0.68s]
+  iter    2: freq    1.234510601  sig   414.6594  amp  1.012256622  phase   1.039  rms  1.168799676  csig   998.9362  [0.60s]
+  iter    3: freq    4.567950460  sig   336.9957  amp  0.782566796  phase   1.939  rms  1.031040271  csig  1335.9319  [0.62s]
+  iter    4: freq    8.759966422  sig   354.5836  amp  0.708051014  phase   1.535  rms  0.902747541  csig  1690.5155  [0.60s]
+  iter    5: freq   12.899997515  sig   338.5599  amp  0.600182340  phase   0.141  rms  0.795723513  csig  2029.0754  [0.62s]
+  iter    6: freq    4.970310405  sig     5.1434  amp  0.066102650  phase  -0.029  rms  0.794368166  csig  2034.2187  [0.64s]
+  iter    7: max sig = 3.7837 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 6
+  Total elapsed time   : 6.218 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (Metal)
+  Input   : /Users/abiao/Documents/资料存档/软件工具/gitrepo/FACG/FACG_testdata/FACG_Test_03.dat
+  Output  : /Users/abiao/Documents/资料存档/软件工具/gitrepo/FACG/FACG_testdata/FACG_Test_03
+=================================================================
+  Data points   : 8000
+  Time base     : 99.970604
+  Rayleigh res  : 0.010002940
+  Freq step     : 0.000500147
+  Freq range    : [0.010003, 58.418039]
+  Nyquist coeff : 58.418039
+  Oversampling  : 20.0
+  # frequencies : 116783
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq   11.548789303  sig   573.4205  amp  0.948960614  phase  -1.650  rms  0.953235011  csig   573.4205  [1.26s]
+  iter    2: freq    2.213486582  sig   777.0256  amp  0.896915125  phase  -2.478  rms  0.708525559  csig  1350.4461  [0.81s]
+  iter    3: freq    5.910386168  sig   345.0027  amp  0.443127657  phase  -2.984  rms  0.634249409  csig  1695.4489  [0.80s]
+  iter    4: freq   13.242428273  sig   410.2160  amp  0.435760734  phase  -2.459  rms  0.554197898  csig  2105.6648  [0.80s]
+  iter    5: freq   25.057106958  sig   384.6750  amp  0.370445317  phase   1.147  rms  0.488797709  csig  2490.3398  [0.80s]
+  iter    6: freq   18.160447904  sig   382.4717  amp  0.326265429  phase   0.998  rms  0.431435389  csig  2872.8115  [0.81s]
+  iter    7: freq   21.387878238  sig   214.4251  amp  0.214268410  phase  -0.162  rms  0.403885532  csig  3087.2366  [0.82s]
+  iter    8: max sig = 4.4106 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 7
+  Total elapsed time   : 9.329 s
+=================================================================
+
+===== Total processing time: 20.326 s =====
+
+
+ cd ..
+(base) abiao@niuabiaodeMacBook-Pro FACG % cd ../SigSpec 
+(base) abiao@niuabiaodeMacBook-Pro SigSpec % cd FACG_testdata 
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % ls
+000001.Test.dat 000002.Test.dat 000003.Test.dat Test            Test.ini
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % cp ../../FACG/FACG_testdata/*.dat .
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % mv FACG_Test_01.dat 000001.Test.dat 
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % mv FACG_Test_02.dat 000002.Test.dat 
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % mv FACG_Test_03.dat 000003.Test.dat 
+(base) abiao@niuabiaodeMacBook-Pro FACG_testdata % ../SigSpec Test  
+ SSSSSS  ii          SSSSSS                          
+SS    SS            SS    SS                         
+SS       ii  gggg g SS       p pppp   eeeee   ccccc  
+SS       ii gg   gg SS       pp   pp ee   ee cc   cc 
+ SSSSSS  ii gg   gg  SSSSSS  pp   pp ee   ee cc      
+      SS ii gg   gg       SS pp   pp eeeeeee cc      
+      SS ii gg   gg       SS pp   pp ee      cc      
+SS    SS ii gg   gg SS    SS pp   pp ee   ee cc   cc 
+ SSSSSS  ii  gggggg  SSSSSS  pppppp   eeeee   ccccc  
+                 gg          pp                      
+            gg   gg          pp                      
+             ggggg           pp                      
+
+
+SIGnificance SPECtrum
+Version 2.0
+************************************************************
+by Piet Reegen
+Institute of Astronomy
+University of Vienna
+Tuerkenschanzstrasse 17
+1180 Vienna, Austria
+Release date: August 18, 2009
+
+
+*** start **************************************************
+
+command line interface
+Checking availability of project directory Test...
+project directory Test ok.
+loading .ini file
+checking .ini file entries
+
+*** MultiFile count ****************************************
+
+number of files                           3
+
+*** loading time series input file(s) **********************
+
+000001.Test.dat                              
+000002.Test.dat                                              
+000003.Test.dat                                              
+                                                             
+*** time series properties *********************************
+
+MultiFile 000001 points 6000, time base 119.882, rms dev 1.21071
+MultiFile 000002 points 7000, time base 249.953, rms dev 1.74702
+MultiFile 000003 points 8000, time base 99.9706, rms dev 1.16467
+
+*** preparing to run SigSpec *******************************
+
+Rayleigh frequency resolution             0.0040007466353401
+oversampling ratio                       20.0000000000000000
+frequency spacing                         0.0002000373317670
+lower frequency limit                     0.0002000373317670
+upper frequency limit                    58.4181022199086826
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                292036
+
+*** running SigSpec ****************************************
+
+MultiFile 000001                                
+   1 freq 1.23  sig 442.075  rms 1.21071  csig 442.075                
+   2 freq 3.4499  sig 410.912  rms 0.984103  csig 410.912                
+   3 freq 5.66987  sig 339.147  rms 0.814171  csig 339.147                
+   4 freq 10.1001  sig 329.577  rms 0.700202  csig 329.577                
+   5 freq 15.5  sig 286.427  rms 0.605123  csig 286.427                
+   6 freq 22.7998  sig 202.406  rms 0.534399  csig 202.406                
+   7 freq 19.6569  sig 3.76372  rms 0.490981  csig 3.76372                
+                                                                
+MultiFile 000002                                
+   1 freq 0.123446  sig 584.327  rms 1.74702  csig 584.327                
+   2 freq 1.23451  sig 414.696  rms 1.3707  csig 414.696                
+   3 freq 4.56795  sig 336.867  rms 1.1688  csig 336.867                
+   4 freq 8.75997  sig 354.566  rms 1.03104  csig 336.867                
+   5 freq 12.9  sig 338.667  rms 0.902748  csig 336.867                
+   6 freq 36.1971  sig 5.89845  rms 0.795723  csig 5.89845                
+   7 freq 4.97038  sig 5.04216  rms 0.794174  csig 4.98555                
+   8 freq 28.0154  sig 4.09786  rms 0.792851  csig 4.04498                
+                                                                
+MultiFile 000003                                
+   1 freq 11.5488  sig 573.477  rms 1.16467  csig 573.477                
+   2 freq 2.21349  sig 777.374  rms 0.953235  csig 573.477                
+   3 freq 5.91039  sig 344.588  rms 0.708525  csig 344.588                
+   4 freq 13.2424  sig 410.095  rms 0.634249  csig 344.588                
+   5 freq 25.0571  sig 385.143  rms 0.554198  csig 344.588                
+   6 freq 18.1604  sig 383.102  rms 0.488797  csig 344.588                
+   7 freq 21.3879  sig 214.127  rms 0.431435  csig 214.127                
+   8 freq 40.2441  sig 4.28613  rms 0.403885  csig 4.28613                
+                                                                
+
+Total execution time: 133.050 seconds.
+                                                                
+
+Finished.
+
+************************************************************
+
+Thank you for using SigSpec!
+Questions or comments?
+Please contact Piet Reegen (reegen@astro.univie.ac.at)
+Bye!
+
+
+
+下面是在Dell电脑上Ubuntu 系统下的测试结果：

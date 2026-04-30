@@ -110,6 +110,7 @@ def write_result(
 ) -> Path:
     """Write the main frequency result table.
 
+<<<<<<< HEAD
     Columns: amp  freq  phase  rms  sig  csig
     """
     outpath = outdir / f"{stem}.dat"
@@ -121,6 +122,19 @@ def write_result(
                 f"{r['amp']:20.12f} {r['freq']:20.12f} "
                 f"{r['phase']:20.12f} {r['rms']:20.12f} "
                 f"{r['sig']:20.12f} {r['csig']:20.12f}\n"
+=======
+    Columns: freq  sig  amp  phase  rms  csig
+    """
+    outpath = outdir / f"{stem}.dat"
+    with open(outpath, "w") as f:
+        f.write("# freq                 sig                  amp                  "
+                "phase                rms                  csig\n")
+        for r in results:
+            f.write(
+                f"{r['freq']:20.12f} {r['sig']:20.12f} "
+                f"{r['amp']:20.12f} {r['phase']:20.12f} "
+                f"{r['rms']:20.12f} {r['csig']:20.12f}\n"
+>>>>>>> 9960956 (Initial commit for FACG package)
             )
     return outpath
 

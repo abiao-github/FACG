@@ -221,11 +221,19 @@ def run_analysis(cfg: FACGConfig) -> list[dict]:
         iter_dt = time.time() - iter_t0
         if not cfg.quiet:
             print(
+<<<<<<< HEAD
                 f"  iter {it:4d}: amp {abs(A_opt):12.9f}  "
                 f"freq {f_opt:14.9f}  "
                 f"phase {p_opt:7.3f}  "
                 f"rms {rms_new:12.9f}  "
                 f"sig {sig_ref:10.4f}  "
+=======
+                f"  iter {it:4d}: freq {f_opt:14.9f}  "
+                f"sig {sig_ref:10.4f}  "
+                f"amp {abs(A_opt):12.9f}  "
+                f"phase {p_opt:7.3f}  "
+                f"rms {rms_new:12.9f}  "
+>>>>>>> 9960956 (Initial commit for FACG package)
                 f"csig {csig:10.4f}  "
                 f"[{iter_dt:.2f}s]"
             )

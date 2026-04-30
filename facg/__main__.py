@@ -29,12 +29,22 @@ from __future__ import annotations
 
 import argparse
 import sys
+<<<<<<< HEAD
+=======
+import glob
+>>>>>>> 9960956 (Initial commit for FACG package)
 import time
 from pathlib import Path
 
 from facg.config import FACGConfig
 from facg.prewhiten import run_analysis
+<<<<<<< HEAD
 from facg.backend import print_backend_status
+=======
+from facg import backend
+from facg.config_io import CONFIG_FILENAME, generate_default_config, load_config_for_argparse
+from facg.testdata import generate_all_test_data
+>>>>>>> 9960956 (Initial commit for FACG package)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -49,9 +59,16 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "files",
+<<<<<<< HEAD
         nargs="+",
         help="One or more input time-series files (whitespace-delimited, "
              "no header, any legal filename).",
+=======
+        nargs="*",
+        help="One or more input time-series files (whitespace-delimited, "
+             "no header, any legal filename). Supports wildcards (e.g., *.dat). "
+             "If omitted, processes all *.dat and *.txt files in the current directory.",
+>>>>>>> 9960956 (Initial commit for FACG package)
     )
     p.add_argument(
         "--time-col", type=int, default=0,
@@ -91,7 +108,11 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "-o", "--output-dir", type=str, default=None,
+<<<<<<< HEAD
         help="Output directory (default: <inputstem>_facg/ next to input).",
+=======
+        help="Output directory (default: <inputstem>/ next to input).",
+>>>>>>> 9960956 (Initial commit for FACG package)
     )
     p.add_argument(
         "--no-spectrum", action="store_true",
@@ -115,6 +136,21 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Suppress progress output.",
     )
     p.add_argument(
+<<<<<<< HEAD
+=======
+        "--cpu", "--CPU", dest="force_cpu", action="store_true",
+        help="Force CPU-only mode (NumPy), even if a GPU is available.",
+    )
+    p.add_argument(
+        "--gen-config", action="store_true",
+        help="Generate a default 'facg.conf' file in the current directory and exit.",
+    )
+    p.add_argument(
+        "--testdata", action="store_true",
+        help="Generate benchmark datasets in the current directory for performance comparison and exit.",
+    )
+    p.add_argument(
+>>>>>>> 9960956 (Initial commit for FACG package)
         "-V", "--version", action="version",
         version="%(prog)s 0.1.0",
     )
@@ -122,6 +158,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+<<<<<<< HEAD
     parser = _build_parser()
     args = parser.parse_args(argv)
 
@@ -132,6 +169,71 @@ def main(argv: list[str] | None = None) -> int:
     total_t0 = time.time()
 
     for filepath in args.files:
+=======
+    # Special handling for --gen-config to avoid needing other args
+    # and to allow it to work without any input files.
+    if argv is None:
+        argv = sys.argv[1:]
+    if "--gen-config" in argv:
+        generate_default_config()
+        return 0
+    if "--testdata" in argv:
+        generate_all_test_data()
+        return 0
+
+    parser = _build_parser()
+
+    # Load config file and set as defaults before parsing CLI args
+    config_defaults = load_config_for_argparse(CONFIG_FILENAME)
+    if config_defaults:
+        print(f"✓ Loaded settings from '{CONFIG_FILENAME}'")
+    parser.set_defaults(**config_defaults)
+
+    args = parser.parse_args(argv)
+
+
+    # Initialize backend based on CLI flag. This must be done before
+    # any other part of the code that uses the backend is called.
+    backend.initialize_backend(force_cpu=args.force_cpu)
+
+    # --- File handling: default to local files or expand wildcards ---
+    files_to_process = []
+    if not args.files:
+        # No files given: default to *.dat and *.txt in the current directory.
+        cwd = Path.cwd()
+        files_to_process.extend(sorted(p.as_posix() for p in cwd.glob("*.dat")))
+        files_to_process.extend(sorted(p.as_posix() for p in cwd.glob("*.txt")))
+        if not files_to_process:
+            print(
+                "ERROR: No input files specified and no *.dat or *.txt files "
+                "found in the current directory.",
+                file=sys.stderr,
+            )
+            parser.print_help(sys.stderr)
+            return 1
+    else:
+        # Files or patterns given: expand any wildcards.
+        for pattern in args.files:
+            matched_files = sorted(glob.glob(pattern))
+            if not matched_files:
+                print(f"WARNING: No file(s) found matching: {pattern}", file=sys.stderr)
+            files_to_process.extend(matched_files)
+
+    # Remove duplicates while preserving order
+    unique_files = list(dict.fromkeys(files_to_process))
+
+    if not unique_files:
+        print("ERROR: No input files to process.", file=sys.stderr)
+        return 1
+
+    # Print GPU/CPU backend status on every invocation
+    if not args.quiet:
+        backend.print_backend_status(file=sys.stdout)
+
+    total_t0 = time.time()
+
+    for filepath in unique_files:
+>>>>>>> 9960956 (Initial commit for FACG package)
         fpath = Path(filepath)
         if not fpath.is_file():
             print(f"ERROR: file not found: {filepath}", file=sys.stderr)
