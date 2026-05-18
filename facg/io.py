@@ -77,7 +77,10 @@ def read_timeseries(
             x = table_hdu.data[cols[data_col]].astype(np.float64)
             
     else:
-        data = np.loadtxt(filepath)
+        try:
+            data = np.loadtxt(filepath)
+        except ValueError as exc:
+            raise ValueError(f"Could not parse numeric data from '{filepath.name}'. Is it a valid time-series file? Details: {exc}")
         if data.ndim == 1:
             raise ValueError(f"Expected at least 2 columns, got 1 in {filepath.name}")
         if data.shape[1] <= max_col:
