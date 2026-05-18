@@ -80,8 +80,6 @@ On **Windows/Linux** (for NVIDIA GPUs):
     See https://docs.cupy.dev/en/stable/install.html
 ```
 
-<<<<<<< HEAD
-=======
 On **macOS** (for Apple Silicon):
 ```text
   ⚠ PyTorch not installed (or no Metal support) — running on CPU only.
@@ -89,7 +87,6 @@ On **macOS** (for Apple Silicon):
       pip install torch
 ```
 
->>>>>>> 9960956 (Initial commit for FACG package)
 **Dependencies (auto-installed):**
 - Python ≥ 3.9
 - NumPy ≥ 1.22
@@ -97,17 +94,9 @@ On **macOS** (for Apple Silicon):
 - Pandas ≥ 1.5
 - Openpyxl ≥ 3.0 (for Excel support)
 - Astropy ≥ 5.0 (for FITS support)
-<<<<<<< HEAD
-- Pandas ≥ 1.5
-- Openpyxl ≥ 3.0 (for Excel support)
-- Astropy ≥ 5.0 (for FITS support)
-- Matplotlib ≥ 3.5
-- *(optional, install manually)* CuPy — for GPU acceleration
-=======
 - Matplotlib ≥ 3.5
 - *(optional)* CuPy — for NVIDIA GPU acceleration
 - *(optional)* PyTorch — for Apple Silicon GPU acceleration
->>>>>>> 9960956 (Initial commit for FACG package)
 
 ---
 
@@ -128,12 +117,9 @@ facg data.dat --sig-limit 6 --oversampling 40 --freq-high 50 --output-dir ./resu
 # Quiet mode (suppress progress output)
 facg data.dat -q
 
-<<<<<<< HEAD
-=======
 # Force CPU-only mode
 facg data.dat --cpu
 
->>>>>>> 9960956 (Initial commit for FACG package)
 # Show all available options
 facg --help
 ```
@@ -153,19 +139,11 @@ cfg = FACGConfig(
 results = run_analysis(cfg)
 
 for r in results:
-<<<<<<< HEAD
-    print(f"  amp = {r['amp']:12.9f}  "
-          f"freq = {r['freq']:12.9f}  "
-          f"phase = {r['phase']:8.4f}  "
-          f"rms = {r['rms']:12.9f}  "
-          f"sig = {r['sig']:8.2f}  "
-=======
     print(f"  freq = {r['freq']:12.9f}  "
           f"sig = {r['sig']:8.2f}  "
           f"amp = {r['amp']:12.9f}  "
           f"phase = {r['phase']:8.4f}  "
           f"rms = {r['rms']:12.9f}  "
->>>>>>> 9960956 (Initial commit for FACG package)
           f"csig = {r['csig']:8.2f}")
 ```
 
@@ -199,11 +177,7 @@ specific naming convention or header.
 ## Output Files
 
 All output is written to an automatically created directory
-<<<<<<< HEAD
-`<input_stem>_facg/` next to the input file (or to `--output-dir`
-=======
 `<input_stem>/` next to the input file (or to `--output-dir`
->>>>>>> 9960956 (Initial commit for FACG package)
 if specified).
 
 ### Main Result Table — `<stem>.dat`
@@ -268,11 +242,7 @@ grid = [freq_low, freq_low + freq_step, ..., freq_high]
 |-----------|----------|---------|-------------|
 | `time_col` | `--time-col` | 0 | 0-based column index for time |
 | `data_col` | `--data-col` | 1 | 0-based column index for data |
-<<<<<<< HEAD
-| `output_dir` | `-o, --output-dir` | `<stem>_facg/` | Output directory |
-=======
 | `output_dir` | `-o, --output-dir` | `<stem>/` | Output directory |
->>>>>>> 9960956 (Initial commit for FACG package)
 | `write_spectrum` | `--no-spectrum` | True | Write intermediate spectra |
 | `write_residuals` | `--no-residuals` | True | Write intermediate residuals |
 | `write_phase_diagram` | `--phase-diagrams` | False | Write folded phase diagrams |
@@ -401,11 +371,7 @@ as SigSpec:
   FACG — Frequency Analysis of CPU and GPU mixed computing
   Backend : CPU (NumPy 2.3.4)
   Input   : SigSpec_Test_01.dat
-<<<<<<< HEAD
-  Output  : SigSpec_Test_01_facg
-=======
   Output  : SigSpec_Test_01
->>>>>>> 9960956 (Initial commit for FACG package)
 =================================================================
   Data points   : 5000
   Time base     : 99.999198

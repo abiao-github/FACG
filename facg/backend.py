@@ -1,15 +1,10 @@
 """
 Unified CPU/GPU computing backend.
 
-<<<<<<< HEAD
-Provides a transparent wrapper: when CuPy is available and a CUDA GPU is
-detected the module exposes CuPy; otherwise it falls back to NumPy.
-=======
 Provides a transparent wrapper:
 - On systems with an NVIDIA GPU and CuPy, it uses CUDA.
 - On Apple Silicon systems with PyTorch, it uses the Metal (MPS) backend.
 - Otherwise, it falls back to NumPy on the CPU.
->>>>>>> 9960956 (Initial commit for FACG package)
 
 All heavy-lifting functions in FACG use ``xp`` from this module so that
 the rest of the code is backend-agnostic.
@@ -17,51 +12,6 @@ the rest of the code is backend-agnostic.
 
 import sys
 import numpy as np
-<<<<<<< HEAD
-
-# ---------------------------------------------------------------------------
-# Attempt to import CuPy; fall back gracefully
-# ---------------------------------------------------------------------------
-_USE_GPU = False
-_GPU_INFO = ""
-_GPU_WARN = ""
-
-try:
-    import cupy as cp
-
-    # Quick sanity check – allocate a tiny array on the device.
-    cp.array([1.0])
-    _USE_GPU = True
-    dev = cp.cuda.Device()
-    _GPU_INFO = (
-        f"GPU acceleration enabled: {dev.name.decode()}, "
-        f"CuPy {cp.__version__}, CUDA"
-    )
-except ImportError:
-    cp = None
-    _GPU_WARN = (
-        "CuPy not installed — running on CPU only.\n"
-        "  To enable GPU acceleration, install CuPy for your CUDA version:\n"
-        "    pip install cupy-cuda12x      # for CUDA 12.x\n"
-        "    pip install cupy-cuda11x      # for CUDA 11.x\n"
-        "  See https://docs.cupy.dev/en/stable/install.html"
-    )
-except Exception as _exc:
-    cp = None
-    _GPU_WARN = (
-        f"CuPy found but GPU initialisation failed: {_exc}\n"
-        "  Falling back to CPU (NumPy)."
-    )
-
-# Public "array library" handle – use this everywhere instead of np/cp.
-xp = cp if _USE_GPU else np
-
-
-def use_gpu() -> bool:
-    """Return *True* if GPU acceleration is active."""
-    return _USE_GPU
-
-=======
 import platform
 
 
@@ -227,30 +177,22 @@ def use_gpu() -> bool:
 def use_mps() -> bool:
     """Return *True* if MPS acceleration is active (Apple Metal)."""
     return _USE_MPS
->>>>>>> 9960956 (Initial commit for FACG package)
 
 def to_device(arr: np.ndarray):
     """Move a NumPy array to the current device (GPU if available)."""
     if _USE_GPU:
         return cp.asarray(arr)
-<<<<<<< HEAD
-=======
     if _USE_MPS:
         # torch is guaranteed to be the pytorch module if _USE_MPS is True
         # MPS requires float32 for floating-point operations
         if arr.dtype == np.float64:
             arr = arr.astype(np.float32)
         return torch.from_numpy(arr.copy()).to("mps")
->>>>>>> 9960956 (Initial commit for FACG package)
     return arr
 
 
 def to_host(arr) -> np.ndarray:
     """Move an array back to host (CPU) memory."""
-<<<<<<< HEAD
-    if _USE_GPU and hasattr(arr, "get"):
-        return arr.get()
-=======
     if _USE_GPU:
         if hasattr(arr, "get"):
             return arr.get()
@@ -260,34 +202,16 @@ def to_host(arr) -> np.ndarray:
         if cpu_arr.dtype == np.float32:
             cpu_arr = cpu_arr.astype(np.float64)
         return cpu_arr
->>>>>>> 9960956 (Initial commit for FACG package)
     return np.asarray(arr)
 
 
 def backend_name() -> str:
     """Human-readable backend description."""
-<<<<<<< HEAD
-    if _USE_GPU:
-        dev = cp.cuda.Device()
-        return f"GPU (CuPy {cp.__version__}, {dev.name.decode()}, CUDA)"
-    return f"CPU (NumPy {np.__version__})"
-=======
     return _BACKEND_SIMPLE_NAME
->>>>>>> 9960956 (Initial commit for FACG package)
 
 
 def print_backend_status(file=sys.stderr) -> None:
     """Print a one-time status message about the computing backend.
-<<<<<<< HEAD
-
-    Called automatically during ``facg`` startup so the user always
-    knows whether GPU acceleration is active.
-    """
-    if _USE_GPU:
-        print(f"  ✓ {_GPU_INFO}", file=file)
-    elif _GPU_WARN:
-        print(f"  ⚠ {_GPU_WARN}", file=file)
-=======
     """
     if _USE_GPU or _USE_MPS:
         print(f"  ✓ {_BACKEND_INFO}", file=file)
@@ -299,4 +223,3 @@ def print_backend_status(file=sys.stderr) -> None:
 # This ensures that the backend is ready for users of the Python API.
 # The CLI entry point can override this by calling initialize_backend() again.
 initialize_backend()
->>>>>>> 9960956 (Initial commit for FACG package)
