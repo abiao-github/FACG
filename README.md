@@ -9,16 +9,20 @@ estimation, iterative prewhitening, and global multi-sine optimisation —
 while leveraging CUDA GPUs for the most computationally intensive steps.
 When no GPU is available it falls back transparently to CPU (NumPy).
 
+[Read this in Chinese (中文版) 🇨🇳](README_CN.md)
+
 ## Features
 
 - **GPU acceleration** via CuPy — transparent fallback to NumPy on CPU
   - **NVIDIA**: via CuPy/CUDA
   - **Apple Silicon**: via PyTorch/Metal (MPS)
-  - Transparent fallback to NumPy on CPU
 - **SigSpec-compatible significance** formula (analytic false-alarm probability)
 - **Iterative prewhitening** with frequency refinement (bisection search)
 - **Global multi-sine optimisation** via Levenberg–Marquardt with analytic Jacobian
 - **Flexible file naming** — any legal filename accepted (no rigid naming rules)
+- **Smart hardware detection** — automatically detects GPU hardware and interactively prompts for missing dependencies (CuPy/PyTorch) before falling back to CPU
+- **Benchmark utility** — built-in `--testdata` generator for performance benchmarking
+- **Configuration file support** — generate a default `facg.conf` via `--gen-config` to save your preferred parameters
 - **Installable Python package** with CLI (`facg`) and Python API
 - **Processing time reporting** — per-iteration and total elapsed time
 
@@ -73,11 +77,14 @@ computing backend:
 
 On **Windows/Linux** (for NVIDIA GPUs):
 ```text
-  ⚠ CuPy not installed — running on CPU only.
+  ✓ CPU (NumPy 1.26.x)
+  ⚠ NVIDIA GPU hardware detected, but CuPy is not installed.
     To enable GPU acceleration, install CuPy for your CUDA version:
       pip install cupy-cuda12x      # for CUDA 12.x
       pip install cupy-cuda11x      # for CUDA 11.x
     See https://docs.cupy.dev/en/stable/install.html
+
+Do you want to continue in CPU mode? [y/N]: 
 ```
 
 On **macOS** (for Apple Silicon):

@@ -215,4 +215,391 @@ Bye!
 
 
 
-下面是在Dell电脑上Ubuntu 系统下的测试结果：
+下面是在Dell电脑上Ubuntu 系统下两个软件的测试结果：
+facg --cpu
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : CPU
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_01.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_01
+=================================================================
+  Data points   : 6000
+  Time base     : 119.991246
+  Rayleigh res  : 0.008333941
+  Freq step     : 0.000416697
+  Freq range    : [0.008334, 36.142836]
+  Nyquist coeff : 36.142836
+  Oversampling  : 20.0
+  # frequencies : 86718
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    1.230043003  sig   435.5420  amp  0.996416807  phase   0.511  rms  0.995103286  csig   435.5420  [26.94s]
+  iter    2: freq    3.450083951  sig   403.7523  amp  0.793314767  phase   1.158  rms  0.826518875  csig   839.2943  [26.92s]
+  iter    3: freq    5.669820902  sig   338.1849  amp  0.601992899  phase  -0.956  rms  0.711019365  csig  1177.4792  [26.49s]
+  iter    4: freq   10.100019458  sig   333.9997  amp  0.515287947  phase   0.792  rms  0.613036754  csig  1511.4788  [26.14s]
+  iter    5: freq   15.528614144  sig   275.8152  amp  0.036941034  phase   0.862  rms  0.612479178  csig  1787.2940  [26.09s]
+  iter    6: freq   15.499736836  sig   272.4733  amp  0.400292808  phase   1.858  rms  0.543796739  csig  2059.7673  [26.92s]
+  iter    7: freq   22.799950205  sig   195.9574  amp  0.297475459  phase  -0.600  rms  0.501043928  csig  2255.7247  [25.99s]
+  iter    8: max sig = 3.6882 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 7
+  Total elapsed time   : 239.886 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : CPU
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_02.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_02
+=================================================================
+  Data points   : 7000
+  Time base     : 249.957474
+  Rayleigh res  : 0.004000681
+  Freq step     : 0.000200034
+  Freq range    : [0.004001, 20.356648]
+  Nyquist coeff : 20.356648
+  Oversampling  : 20.0
+  # frequencies : 101747
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    0.123851020  sig   559.7007  amp  0.163502431  phase  -0.446  rms  1.663031016  csig   559.7007  [39.00s]
+  iter    2: freq    0.124130483  sig   482.0479  amp  0.289175319  phase  -0.735  rms  1.597128594  csig  1041.7486  [39.99s]
+  iter    3: freq    0.122177382  sig   394.0811  amp  0.606917743  phase   1.301  rms  1.439703768  csig  1435.8298  [42.24s]
+  iter    4: freq    1.235008792  sig   376.6939  amp  0.551283046  phase   0.557  rms  1.273822452  csig  1812.5236  [45.07s]
+  iter    5: freq    4.565675860  sig   297.4496  amp  0.126508655  phase   1.290  rms  1.155894362  csig  2109.9732  [48.50s]
+  iter    6: freq    4.569792891  sig   315.1575  amp  0.157813424  phase  -0.048  rms  1.144286336  csig  2425.1307  [52.20s]
+  iter    7: freq    4.567931308  sig   287.0517  amp  0.794353486  phase  -1.180  rms  1.027612781  csig  2712.1824  [38.04s]
+  iter    8: freq    8.759453548  sig   340.1679  amp  0.187616002  phase   2.040  rms  0.976370300  csig  3052.3503  [60.25s]
+  iter    9: freq   12.900067715  sig   288.0954  amp  0.611668332  phase   0.059  rms  0.795728950  csig  3340.4457  [58.32s]
+  iter   10: max sig = 3.9542 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 9
+  Total elapsed time   : 499.704 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : CPU
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_03.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_03
+=================================================================
+  Data points   : 8000
+  Time base     : 99.970604
+  Rayleigh res  : 0.010002940
+  Freq step     : 0.000500147
+  Freq range    : [0.010003, 58.418039]
+  Nyquist coeff : 58.418039
+  Oversampling  : 20.0
+  # frequencies : 116783
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq   11.548789303  sig   573.4205  amp  0.948960614  phase  -1.650  rms  0.953235011  csig   573.4205  [49.38s]
+  iter    2: freq    2.213486582  sig   777.0256  amp  0.896915125  phase  -2.478  rms  0.708525559  csig  1350.4461  [47.91s]
+  iter    3: freq    5.910386169  sig   345.0027  amp  0.443127657  phase  -2.984  rms  0.634249409  csig  1695.4489  [48.01s]
+  iter    4: freq   13.242428273  sig   410.2160  amp  0.435760733  phase  -2.459  rms  0.554197898  csig  2105.6648  [48.04s]
+  iter    5: freq   25.057106958  sig   384.6750  amp  0.370445317  phase   1.147  rms  0.488797709  csig  2490.3398  [47.88s]
+  iter    6: freq   18.160447904  sig   382.4717  amp  0.326265429  phase   0.998  rms  0.431435389  csig  2872.8115  [48.05s]
+  iter    7: freq   21.387878238  sig   214.4251  amp  0.214268410  phase  -0.162  rms  0.403885532  csig  3087.2366  [47.99s]
+  iter    8: max sig = 4.4091 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 7
+  Total elapsed time   : 435.737 s
+=================================================================
+
+===== Total processing time: 1175.328 s =====
+
+
+
+
+facg
+  ✓ GPU: NVIDIA GeForce RTX 3080 Laptop GPU (CuPy 13.3.0, CUDA)
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (CUDA)
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_01.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_01
+=================================================================
+  Data points   : 6000
+  Time base     : 119.991246
+  Rayleigh res  : 0.008333941
+  Freq step     : 0.000416697
+  Freq range    : [0.008334, 36.142836]
+  Nyquist coeff : 36.142836
+  Oversampling  : 20.0
+  # frequencies : 86718
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    1.230043003  sig   435.5420  amp  0.996416807  phase   0.511  rms  0.995103286  csig   435.5420  [2.78s]
+  iter    2: freq    3.450083951  sig   403.7523  amp  0.793314767  phase   1.158  rms  0.826518875  csig   839.2943  [1.05s]
+  iter    3: freq    5.669820902  sig   338.1849  amp  0.601992899  phase  -0.956  rms  0.711019365  csig  1177.4792  [1.04s]
+  iter    4: freq   10.100019458  sig   333.9997  amp  0.515287947  phase   0.792  rms  0.613036754  csig  1511.4788  [1.05s]
+  iter    5: freq   15.528614144  sig   275.8152  amp  0.036941034  phase   0.862  rms  0.612479178  csig  1787.2940  [1.09s]
+  iter    6: freq   15.499736836  sig   272.4733  amp  0.400292805  phase   1.858  rms  0.543796739  csig  2059.7673  [1.85s]
+  iter    7: freq   22.799950205  sig   195.9574  amp  0.297475459  phase  -0.600  rms  0.501043928  csig  2255.7247  [1.09s]
+  iter    8: max sig = 3.6882 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 7
+  Total elapsed time   : 14.058 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (CUDA)
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_02.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_02
+=================================================================
+  Data points   : 7000
+  Time base     : 249.957474
+  Rayleigh res  : 0.004000681
+  Freq step     : 0.000200034
+  Freq range    : [0.004001, 20.356648]
+  Nyquist coeff : 20.356648
+  Oversampling  : 20.0
+  # frequencies : 101747
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    0.123851511  sig   559.7007  amp  0.162991628  phase  -0.446  rms  1.663228237  csig   559.7007  [3.88s]
+  iter    2: freq    0.124153095  sig   482.2942  amp  0.289082864  phase  -0.741  rms  1.598592457  csig  1041.9949  [5.79s]
+  iter    3: freq    0.122175396  sig   396.1766  amp  0.608833731  phase   1.304  rms  1.440534471  csig  1438.1715  [8.25s]
+  iter    4: freq    1.235008766  sig   376.2594  amp  0.551021779  phase   0.557  rms  1.274686754  csig  1814.4308  [11.00s]
+  iter    5: freq    4.583529431  sig   297.0363  amp  0.021648873  phase   1.013  rms  1.171467781  csig  2111.4671  [14.00s]
+  iter    6: freq    4.576381769  sig   349.3474  amp  0.016129413  phase  -0.447  rms  1.170994883  csig  2460.8146  [17.30s]
+  iter    7: freq    4.600585857  sig   348.3519  amp  0.017032802  phase  -0.363  rms  1.170917300  csig  2809.1665  [21.09s]
+  iter    8: freq    4.580290924  sig   348.3972  amp  0.038954937  phase  -0.387  rms  1.169028110  csig  3157.5637  [24.29s]
+  iter    9: freq    4.567072349  sig   341.3252  amp  0.189420530  phase  -0.280  rms  1.118206681  csig  3498.8890  [29.12s]
+  iter   10: freq    8.759595670  sig   284.3027  amp  0.197206554  phase   1.901  rms  1.065953166  csig  3783.1917  [33.85s]
+  iter   11: freq   12.900622388  sig   244.1527  amp  0.220144373  phase  -0.529  rms  0.885875611  csig  4027.3444  [39.98s]
+  iter   12: freq   12.903660402  sig   159.4482  amp  0.021631304  phase  -0.449  rms  0.795041833  csig  4186.7926  [5.33s]
+  iter   13: max sig = 3.9687 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 12
+  Total elapsed time   : 220.662 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (CUDA)
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_03.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_03
+=================================================================
+  Data points   : 8000
+  Time base     : 99.970604
+  Rayleigh res  : 0.010002940
+  Freq step     : 0.000500147
+  Freq range    : [0.010003, 58.418039]
+  Nyquist coeff : 58.418039
+  Oversampling  : 20.0
+  # frequencies : 116783
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq   11.548789303  sig   573.4205  amp  0.948960614  phase  -1.650  rms  0.953235011  csig   573.4205  [2.66s]
+  iter    2: freq    2.213486582  sig   777.0256  amp  0.896915125  phase  -2.478  rms  0.708525559  csig  1350.4461  [1.94s]
+  iter    3: freq    5.910386169  sig   345.0027  amp  0.443127657  phase  -2.984  rms  0.634249409  csig  1695.4489  [1.99s]
+  iter    4: freq   13.242428273  sig   410.2160  amp  0.435760733  phase  -2.459  rms  0.554197898  csig  2105.6648  [2.01s]
+  iter    5: freq   25.057106958  sig   384.6750  amp  0.370445317  phase   1.147  rms  0.488797709  csig  2490.3398  [2.06s]
+  iter    6: freq   18.160447904  sig   382.4717  amp  0.326265429  phase   0.998  rms  0.431435389  csig  2872.8115  [2.02s]
+  iter    7: freq   21.387878238  sig   214.4251  amp  0.214268410  phase  -0.162  rms  0.403885532  csig  3087.2366  [2.04s]
+  iter    8: max sig = 4.4091 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 7
+  Total elapsed time   : 21.402 s
+=================================================================
+
+===== Total processing time: 256.122 s =====
+
+
+facg
+  ✓ GPU: NVIDIA GeForce RTX 3080 Laptop GPU (CuPy 13.3.0, CUDA)
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (CUDA)
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_01.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_01
+=================================================================
+  Data points   : 6000
+  Time base     : 119.991246
+  Rayleigh res  : 0.008333941
+  Freq step     : 0.000416697
+  Freq range    : [0.008334, 36.142836]
+  Nyquist coeff : 36.142836
+  Oversampling  : 20.0
+  # frequencies : 86718
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    1.230043003  sig   435.5420  amp  0.996416807  phase   0.511  rms  0.995103286  csig   435.5420  [2.78s]
+  iter    2: freq    3.450083951  sig   403.7523  amp  0.793314767  phase   1.158  rms  0.826518875  csig   839.2943  [1.05s]
+  iter    3: freq    5.669820902  sig   338.1849  amp  0.601992899  phase  -0.956  rms  0.711019365  csig  1177.4792  [1.04s]
+  iter    4: freq   10.100019458  sig   333.9997  amp  0.515287947  phase   0.792  rms  0.613036754  csig  1511.4788  [1.05s]
+  iter    5: freq   15.528614144  sig   275.8152  amp  0.036941034  phase   0.862  rms  0.612479178  csig  1787.2940  [1.09s]
+  iter    6: freq   15.499736836  sig   272.4733  amp  0.400292805  phase   1.858  rms  0.543796739  csig  2059.7673  [1.85s]
+  iter    7: freq   22.799950205  sig   195.9574  amp  0.297475459  phase  -0.600  rms  0.501043928  csig  2255.7247  [1.09s]
+  iter    8: max sig = 3.6882 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 7
+  Total elapsed time   : 14.058 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (CUDA)
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_02.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_02
+=================================================================
+  Data points   : 7000
+  Time base     : 249.957474
+  Rayleigh res  : 0.004000681
+  Freq step     : 0.000200034
+  Freq range    : [0.004001, 20.356648]
+  Nyquist coeff : 20.356648
+  Oversampling  : 20.0
+  # frequencies : 101747
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq    0.123851511  sig   559.7007  amp  0.162991628  phase  -0.446  rms  1.663228237  csig   559.7007  [3.88s]
+  iter    2: freq    0.124153095  sig   482.2942  amp  0.289082864  phase  -0.741  rms  1.598592457  csig  1041.9949  [5.79s]
+  iter    3: freq    0.122175396  sig   396.1766  amp  0.608833731  phase   1.304  rms  1.440534471  csig  1438.1715  [8.25s]
+  iter    4: freq    1.235008766  sig   376.2594  amp  0.551021779  phase   0.557  rms  1.274686754  csig  1814.4308  [11.00s]
+  iter    5: freq    4.583529431  sig   297.0363  amp  0.021648873  phase   1.013  rms  1.171467781  csig  2111.4671  [14.00s]
+  iter    6: freq    4.576381769  sig   349.3474  amp  0.016129413  phase  -0.447  rms  1.170994883  csig  2460.8146  [17.30s]
+  iter    7: freq    4.600585857  sig   348.3519  amp  0.017032802  phase  -0.363  rms  1.170917300  csig  2809.1665  [21.09s]
+  iter    8: freq    4.580290924  sig   348.3972  amp  0.038954937  phase  -0.387  rms  1.169028110  csig  3157.5637  [24.29s]
+  iter    9: freq    4.567072349  sig   341.3252  amp  0.189420530  phase  -0.280  rms  1.118206681  csig  3498.8890  [29.12s]
+  iter   10: freq    8.759595670  sig   284.3027  amp  0.197206554  phase   1.901  rms  1.065953166  csig  3783.1917  [33.85s]
+  iter   11: freq   12.900622388  sig   244.1527  amp  0.220144373  phase  -0.529  rms  0.885875611  csig  4027.3444  [39.98s]
+  iter   12: freq   12.903660402  sig   159.4482  amp  0.021631304  phase  -0.449  rms  0.795041833  csig  4186.7926  [5.33s]
+  iter   13: max sig = 3.9687 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 12
+  Total elapsed time   : 220.662 s
+=================================================================
+=================================================================
+  FACG — Frequency Analysis of CPU and GPU mixed computing
+  Backend : GPU (CUDA)
+  Input   : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_03.dat
+  Output  : /media/abiao/shareddata/资料存档/软件备份/gitrepo/FACG/FACG_testdata/FACG_Test_03
+=================================================================
+  Data points   : 8000
+  Time base     : 99.970604
+  Rayleigh res  : 0.010002940
+  Freq step     : 0.000500147
+  Freq range    : [0.010003, 58.418039]
+  Nyquist coeff : 58.418039
+  Oversampling  : 20.0
+  # frequencies : 116783
+  sig threshold : 5.0
+-----------------------------------------------------------------
+  iter    1: freq   11.548789303  sig   573.4205  amp  0.948960614  phase  -1.650  rms  0.953235011  csig   573.4205  [2.66s]
+  iter    2: freq    2.213486582  sig   777.0256  amp  0.896915125  phase  -2.478  rms  0.708525559  csig  1350.4461  [1.94s]
+  iter    3: freq    5.910386169  sig   345.0027  amp  0.443127657  phase  -2.984  rms  0.634249409  csig  1695.4489  [1.99s]
+  iter    4: freq   13.242428273  sig   410.2160  amp  0.435760733  phase  -2.459  rms  0.554197898  csig  2105.6648  [2.01s]
+  iter    5: freq   25.057106958  sig   384.6750  amp  0.370445317  phase   1.147  rms  0.488797709  csig  2490.3398  [2.06s]
+  iter    6: freq   18.160447904  sig   382.4717  amp  0.326265429  phase   0.998  rms  0.431435389  csig  2872.8115  [2.02s]
+  iter    7: freq   21.387878238  sig   214.4251  amp  0.214268410  phase  -0.162  rms  0.403885532  csig  3087.2366  [2.04s]
+  iter    8: max sig = 4.4091 < 5.0 – stopping.
+-----------------------------------------------------------------
+  Detected frequencies : 7
+  Total elapsed time   : 21.402 s
+=================================================================
+
+===== Total processing time: 256.122 s =====
+
+
+
+../SigSpec Test
+ SSSSSS  ii          SSSSSS                          
+SS    SS            SS    SS                         
+SS       ii  gggg g SS       p pppp   eeeee   ccccc  
+SS       ii gg   gg SS       pp   pp ee   ee cc   cc 
+ SSSSSS  ii gg   gg  SSSSSS  pp   pp ee   ee cc      
+      SS ii gg   gg       SS pp   pp eeeeeee cc      
+      SS ii gg   gg       SS pp   pp ee      cc      
+SS    SS ii gg   gg SS    SS pp   pp ee   ee cc   cc 
+ SSSSSS  ii  gggggg  SSSSSS  pppppp   eeeee   ccccc  
+                 gg          pp                      
+            gg   gg          pp                      
+             ggggg           pp                      
+
+
+SIGnificance SPECtrum
+Version 2.0
+************************************************************
+by Piet Reegen
+Institute of Astronomy
+University of Vienna
+Tuerkenschanzstrasse 17
+1180 Vienna, Austria
+Release date: August 18, 2009
+
+
+*** start **************************************************
+
+command line interface
+Checking availability of project directory Test...
+project directory Test ok.
+loading .ini file
+checking .ini file entries
+
+*** MultiFile count ****************************************
+
+number of files                           3
+
+*** loading time series input file(s) **********************
+
+000001.Test.dat                              
+000002.Test.dat                                              
+000003.Test.dat                                              
+                                                             
+*** time series properties *********************************
+
+MultiFile 000001 points 6000, time base 119.882, rms dev 1.21071
+MultiFile 000002 points 7000, time base 249.953, rms dev 1.74702
+MultiFile 000003 points 8000, time base 99.9706, rms dev 1.16467
+
+*** preparing to run SigSpec *******************************
+
+Rayleigh frequency resolution             0.0040007466353401
+oversampling ratio                       20.0000000000000000
+frequency spacing                         0.0002000373317670
+lower frequency limit                     0.0002000373317670
+upper frequency limit                    58.4181022199086826
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                292036
+
+*** running SigSpec ****************************************
+
+MultiFile 000001                                
+   1 freq 1.23  sig 442.075  rms 1.21071  csig 442.075                
+   2 freq 3.4499  sig 410.912  rms 0.984103  csig 410.912                
+   3 freq 5.66987  sig 339.147  rms 0.814171  csig 339.147                
+   4 freq 10.1001  sig 329.577  rms 0.700202  csig 329.577                
+   5 freq 15.5  sig 286.427  rms 0.605123  csig 286.427                
+   6 freq 22.7998  sig 202.406  rms 0.534399  csig 202.406                
+   7 freq 19.6569  sig 3.76372  rms 0.490981  csig 3.76372                
+                                                                
+MultiFile 000002                                
+   1 freq 0.123446  sig 584.327  rms 1.74702  csig 584.327                
+   2 freq 1.23451  sig 414.696  rms 1.3707  csig 414.696                
+   3 freq 4.56795  sig 336.867  rms 1.1688  csig 336.867                
+   4 freq 8.75997  sig 354.566  rms 1.03104  csig 336.867                
+   5 freq 12.9  sig 338.667  rms 0.902748  csig 336.867                
+   6 freq 36.1971  sig 5.89845  rms 0.795723  csig 5.89845                
+   7 freq 4.97038  sig 5.04216  rms 0.794174  csig 4.98555                
+   8 freq 28.0154  sig 4.09786  rms 0.792851  csig 4.04498                
+                                                                
+MultiFile 000003                                
+   1 freq 11.5488  sig 573.477  rms 1.16467  csig 573.477                
+   2 freq 2.21349  sig 777.374  rms 0.953235  csig 573.477                
+   3 freq 5.91039  sig 344.588  rms 0.708525  csig 344.588                
+   4 freq 13.2424  sig 410.095  rms 0.634249  csig 344.588                
+   5 freq 25.0571  sig 385.143  rms 0.554198  csig 344.588                
+   6 freq 18.1604  sig 383.102  rms 0.488797  csig 344.588                
+   7 freq 21.3879  sig 214.127  rms 0.431435  csig 214.127                
+   8 freq 40.2441  sig 4.28613  rms 0.403885  csig 4.28613                
+                                                                
+
+Total execution time: 980.973 seconds.
+                                                                
+
+Finished.
+
+************************************************************
+
+Thank you for using SigSpec!
+Questions or comments?
+Please contact Piet Reegen (reegen@astro.univie.ac.at)
+Bye!
