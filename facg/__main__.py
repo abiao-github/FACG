@@ -197,6 +197,18 @@ def main(argv: list[str] | None = None) -> int:
     # Print GPU/CPU backend status on every invocation
     if not args.quiet:
         backend.print_backend_status(file=sys.stdout)
+        
+        # 如果检测到了GPU硬件但缺少相关驱动或库，则提示用户做出选择
+        if backend.requires_dependency_prompt() and not args.force_cpu:
+            try:
+                choice = input("\nDo you want to continue in CPU mode? [y/N]: ").strip().lower()
+                if choice not in ('y', 'yes'):
+                    print("Aborted. Please install the missing dependencies to enable GPU acceleration.")
+                    return 0
+            except (KeyboardInterrupt, EOFError):
+                print("\nAborted.")
+                return 1
+            print()
 
     total_t0 = time.time()
 
