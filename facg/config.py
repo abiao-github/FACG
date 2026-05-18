@@ -23,11 +23,7 @@ class FACGConfig:
         col-0 = time, col-1 = observable).
     output_dir : str or Path or None
         Directory to write output files.  When *None* a sub-directory
-<<<<<<< HEAD
-        ``<stem>_facg/`` next to the input file is created automatically.
-=======
         ``<stem>/`` next to the input file is created automatically.
->>>>>>> 9960956 (Initial commit for FACG package)
     time_col : int
         0-based column index for the time axis (default 0).
     data_col : int
@@ -106,10 +102,6 @@ class FACGConfig:
             p = Path(self.output_dir)
         else:
             inp = Path(self.input_file)
-<<<<<<< HEAD
-            p = inp.parent / f"{inp.stem}_facg"
-=======
             p = inp.parent / inp.stem
->>>>>>> 9960956 (Initial commit for FACG package)
         p.mkdir(parents=True, exist_ok=True)
         return p

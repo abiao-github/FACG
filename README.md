@@ -12,14 +12,9 @@ When no GPU is available it falls back transparently to CPU (NumPy).
 ## Features
 
 - **GPU acceleration** via CuPy — transparent fallback to NumPy on CPU
-<<<<<<< HEAD
-  - DFT significance spectrum computed in bulk on the GPU
-  - Multi-sine Jacobian matrix computed on the GPU for global optimisation
-=======
   - **NVIDIA**: via CuPy/CUDA
   - **Apple Silicon**: via PyTorch/Metal (MPS)
   - Transparent fallback to NumPy on CPU
->>>>>>> 9960956 (Initial commit for FACG package)
 - **SigSpec-compatible significance** formula (analytic false-alarm probability)
 - **Iterative prewhitening** with frequency refinement (bisection search)
 - **Global multi-sine optimisation** via Levenberg–Marquardt with analytic Jacobian
@@ -73,17 +68,11 @@ computing backend:
 
 - If a CUDA-capable GPU and CuPy are available → GPU mode (with a
   confirmation message).
-<<<<<<< HEAD
-- Otherwise → CPU mode, with a hint on how to install CuPy:
-
-```
-=======
 - If on Apple Silicon and PyTorch is available → GPU mode via Metal.
 - Otherwise → CPU mode, with a hint on how to enable GPU acceleration depending on your OS:
 
 On **Windows/Linux** (for NVIDIA GPUs):
 ```text
->>>>>>> 9960956 (Initial commit for FACG package)
   ⚠ CuPy not installed — running on CPU only.
     To enable GPU acceleration, install CuPy for your CUDA version:
       pip install cupy-cuda12x      # for CUDA 12.x
