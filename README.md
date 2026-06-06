@@ -22,7 +22,7 @@ When no GPU is available it falls back transparently to CPU (NumPy).
 - **Flexible file naming** — any legal filename accepted (no rigid naming rules)
 - **Smart hardware detection** — automatically detects GPU hardware and interactively prompts for missing dependencies (CuPy/PyTorch) before falling back to CPU
 - **Benchmark utility** — built-in `--testdata` generator for performance benchmarking
-- **Configuration file support** — generate a default `facg.conf` via `--gen-config` to save your preferred parameters
+- **Configuration file support** — generate a default `facg.conf` via `--config` to save your preferred parameters
 - **Installable Python package** with CLI (`facg`) and Python API
 - **Processing time reporting** — per-iteration and total elapsed time
 

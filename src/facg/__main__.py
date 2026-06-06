@@ -94,6 +94,10 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Upper frequency limit (default: Nyquist frequency).",
     )
     p.add_argument(
+        "--freq-step", type=float, default=None,
+        help="Frequency step (default: Rayleigh resolution / oversampling).",
+    )
+    p.add_argument(
         "-o", "--output-dir", type=str, default=None,
         help="Output directory (default: <inputstem>/ next to input).",
     )
@@ -123,12 +127,20 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Force CPU-only mode (NumPy), even if a GPU is available.",
     )
     p.add_argument(
-        "--gen-config", action="store_true",
+        "--config", action="store_true",
         help="Generate a default 'facg.conf' file in the current directory and exit.",
     )
     p.add_argument(
         "--testdata", action="store_true",
         help="Generate benchmark datasets in the current directory for performance comparison and exit.",
+    )
+    p.add_argument(
+        "--files-num", type=int, default=3,
+        help="Number of test files to generate with --testdata (default: 3).",
+    )
+    p.add_argument(
+        "--signals-num", type=int, default=5,
+        help="Number of signals per test file with --testdata (default: 5).",
     )
     p.add_argument(
         "-V", "--version", action="version",
@@ -138,16 +150,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    # Special handling for --gen-config to avoid needing other args
-    # and to allow it to work without any input files.
     if argv is None:
         argv = sys.argv[1:]
-    if "--gen-config" in argv:
-        generate_default_config()
-        return 0
-    if "--testdata" in argv:
-        generate_all_test_data()
-        return 0
 
     parser = _build_parser()
 
@@ -159,6 +163,12 @@ def main(argv: list[str] | None = None) -> int:
 
     args = parser.parse_args(argv)
 
+    if args.config:
+        generate_default_config()
+        return 0
+    if args.testdata:
+        generate_all_test_data(num_files=args.files_num, num_signals=args.signals_num)
+        return 0
 
     # Initialize backend based on CLI flag. This must be done before
     # any other part of the code that uses the backend is called.
@@ -213,6 +223,7 @@ def main(argv: list[str] | None = None) -> int:
             data_col=args.data_col,
             freq_low=args.freq_low,
             freq_high=args.freq_high,
+            freq_step=args.freq_step,
             nyquist_coeff=args.nyquist_coeff,
             oversampling=args.oversampling,
             sig_limit=args.sig_limit,

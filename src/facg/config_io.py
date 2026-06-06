@@ -22,12 +22,16 @@ def generate_default_config(filepath=CONFIG_FILENAME):
 
 [FrequencyGrid]
 # Lower frequency limit (cycles/time-unit).
-# Default: Rayleigh resolution (1 / Time_base).
+# Default: Frequency step (rayleigh / oversampling).
 freq_low = 
 
 # Upper frequency limit.
 # Default: Nyquist frequency (0.5 / median_delta_t).
 freq_high = 
+
+# Frequency step (spacing).
+# Default: rayleigh / oversampling.
+freq_step = 
 
 # Nyquist coefficient.
 nyquist_coeff = {defaults.nyquist_coeff}
@@ -40,7 +44,7 @@ oversampling = {defaults.oversampling}
 # Stop when peak significance drops below this value.
 sig_limit = {defaults.sig_limit}
 
-# Stop when cumulative significance drops below this value (0 = disabled).
+# Stop when cumulative significance rises above this value (0 = disabled).
 csig_limit = {defaults.csig_limit}
 
 # Maximum number of prewhitening iterations.
@@ -97,13 +101,19 @@ def load_config_for_argparse(filepath=CONFIG_FILENAME):
             val_str = parser.get(section, key)
             if val_str is not None and val_str.strip() != '':
                 try:
-                    settings[dest_key or key] = type_func(val_str)
+                    if type_func == 'bool':
+                        settings[dest_key or key] = parser.getboolean(section, key)
+                    elif type_func == 'inv_bool':
+                        settings[dest_key or key] = not parser.getboolean(section, key)
+                    else:
+                        settings[dest_key or key] = type_func(val_str)
                 except (ValueError, TypeError):
                     print(f"Warning: Invalid value '{val_str}' for '{key}' in config file. Ignoring.")
 
     # Map config values to argparse destinations
     set_if_present('FrequencyGrid', 'freq_low', float)
     set_if_present('FrequencyGrid', 'freq_high', float)
+    set_if_present('FrequencyGrid', 'freq_step', float)
     set_if_present('FrequencyGrid', 'nyquist_coeff', float)
     set_if_present('FrequencyGrid', 'oversampling', float)
     set_if_present('StoppingCriteria', 'sig_limit', float)
@@ -112,9 +122,9 @@ def load_config_for_argparse(filepath=CONFIG_FILENAME):
     set_if_present('IO', 'time_col', int)
     set_if_present('IO', 'data_col', int)
     set_if_present('IO', 'output_dir', str)
-    set_if_present('IO', 'write_phase_diagram', parser.getboolean, 'phase_diagrams')
-    set_if_present('IO', 'plot', parser.getboolean)
-    set_if_present('IO', 'write_spectrum', lambda v: not parser.getboolean('IO', v), 'no_spectrum')
-    set_if_present('IO', 'write_residuals', lambda v: not parser.getboolean('IO', v), 'no_residuals')
+    set_if_present('IO', 'write_phase_diagram', 'bool', 'phase_diagrams')
+    set_if_present('IO', 'plot', 'bool')
+    set_if_present('IO', 'write_spectrum', 'inv_bool', 'no_spectrum')
+    set_if_present('IO', 'write_residuals', 'inv_bool', 'no_residuals')
 
     return settings

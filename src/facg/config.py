@@ -33,10 +33,13 @@ class FACGConfig:
     ~~~~~~~~~~~~~~
     freq_low : float or None
         Lower frequency limit (cycles/time-unit).
-        Default *None* → Rayleigh resolution ``1 / T``.
+        Default *None* → ``rayleigh / oversampling``.
     freq_high : float or None
         Upper frequency limit.
         Default *None* → Nyquist frequency ``0.5 / median(Δt)``.
+    freq_step : float or None
+        Frequency grid step size.
+        Default *None* → ``rayleigh / oversampling``.
     nyquist_coeff : float
         Nyquist coefficient (default 0.5).
     oversampling : float
@@ -78,6 +81,7 @@ class FACGConfig:
     # --- Frequency grid ----------------------------------------------------
     freq_low: Optional[float] = None
     freq_high: Optional[float] = None
+    freq_step: Optional[float] = None
     nyquist_coeff: float = 0.5
     oversampling: float = 20.0
 

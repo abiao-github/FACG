@@ -50,24 +50,21 @@ def _cumulative_sig(csig_prev: float, sig_new: float) -> float:
 
         csig = -log10(1 - (1 - 10^{-csig_prev}) * (1 - 10^{-sig_new}))
 
-    For very large significances the formula simplifies to:
-        csig ≈ csig_prev + sig_new  (independent detections add in log-space).
+    To prevent float64 underflow for very large significances, we expand:
+        FAP_comb = 10^{-csig} + 10^{-sig} - 10^{-(csig + sig)}
+    Factoring out 10^{-min(csig, sig)} yields a highly stable form.
     """
     if csig_prev <= 0:
         return sig_new
-    # For large values, 10^{-sig} underflows → use the additive
-    # approximation that is exact in the limit of independent events
-    if csig_prev > 300 or sig_new > 300:
-        return csig_prev + sig_new
+
+    m = min(csig_prev, sig_new)
+    M = max(csig_prev, sig_new)
     try:
-        p_prev = 1.0 - 10.0 ** (-csig_prev)  # P(prev detections real)
-        p_new = 1.0 - 10.0 ** (-sig_new)      # P(new detection real)
-        p_comb = p_prev * p_new
-        if p_comb >= 1.0:
-            return csig_prev + sig_new
-        return -np.log10(1.0 - p_comb)
+        # 1.0 + 10^{-(M-m)} - 10^{-M}
+        term = 1.0 + 10.0 ** -(M - m) - 10.0 ** -M
+        return m - np.log10(term)
     except Exception:
-        return csig_prev + sig_new
+        return m
 
 
 # ------------------------------------------------------------------
@@ -92,21 +89,15 @@ def run_analysis(cfg: FACGConfig) -> list[dict]:
 
     # --- Preamble ---------------------------------------------------
     outdir = cfg.resolve_output_dir()
-    if not cfg.quiet:
-        print("=" * 65)
-        print("  FACG — Frequency Analysis of CPU and GPU mixed computing")
-        print(f"  Backend : {backend_name()}")
-        print(f"  Input   : {cfg.input_file}")
-        print(f"  Output  : {outdir}")
-        print("=" * 65)
 
     # --- Load data --------------------------------------------------
     t, x_orig = read_timeseries(
         cfg.input_file, cfg.time_col, cfg.data_col
     )
     N = len(t)
-    if not cfg.quiet:
-        print(f"  Data points   : {N}")
+
+    # Calculate orig rms before zero-mean for output
+    rms_orig = np.std(x_orig, ddof=0)
 
     # --- Zero-mean --------------------------------------------------
     mean_x = np.mean(x_orig)
@@ -117,19 +108,24 @@ def run_analysis(cfg: FACGConfig) -> list[dict]:
         t,
         freq_low=cfg.freq_low,
         freq_high=cfg.freq_high,
+        freq_step=cfg.freq_step,
         nyquist_coeff=cfg.nyquist_coeff,
         oversampling=cfg.oversampling,
     )
     if not cfg.quiet:
-        print(f"  Time base     : {info['time_base']:.6f}")
-        print(f"  Rayleigh res  : {info['rayleigh']:.9f}")
-        print(f"  Freq step     : {info['freq_step']:.9f}")
-        print(f"  Freq range    : [{info['freq_low']:.6f}, {info['freq_high']:.6f}]")
-        print(f"  Nyquist coeff : {info['nyquist']:.6f}")
-        print(f"  Oversampling  : {info['oversampling']:.1f}")
-        print(f"  # frequencies : {info['n_freq']}")
-        print(f"  sig threshold : {cfg.sig_limit}")
-        print("-" * 65)
+        stem = Path(cfg.input_file).stem
+        print("\n*** time series properties *********************************\n")
+        print(f"{stem} points {N}, time base {info['time_base']:g}, rms dev {rms_orig:g}\n")
+        print("*** preparing to run FACG **********************************\n")
+        print(f"{'Rayleigh frequency resolution':<42}{info['rayleigh']:.16f}")
+        print(f"{'oversampling ratio':<42}{info['oversampling']:.16f}")
+        print(f"{'frequency spacing':<42}{info['freq_step']:.16f}")
+        print(f"{'lower frequency limit':<42}{info['freq_low']:.16f}")
+        print(f"{'upper frequency limit':<42}{info['freq_high']:.16f}")
+        print(f"{'Nyquist coefficient':<42}{cfg.nyquist_coeff:.16f}")
+        print(f"{'number of frequencies':<38}{info['n_freq']}\n")
+        print("*** running FACG *******************************************\n")
+        print(f"{stem}                                ")
         sys.stdout.flush()
 
     # --- Iterative prewhitening cascade -----------------------------
@@ -154,25 +150,35 @@ def run_analysis(cfg: FACGConfig) -> list[dict]:
         # 2) Find highest-significance frequency
         idx_max = int(np.argmax(sig_spec))
         f0 = freq_grid[idx_max]
-        sig0 = sig_spec[idx_max]
 
-        if sig0 < cfg.sig_limit:
+        # 3) Refine frequency to get true peak properties
+        f_ref, sig_ref, amp_ref, ph_ref = refine_frequency(
+            t, residual, f0, rms,
+            search_range=info["freq_step"],
+        )
+
+        if sig_ref < cfg.sig_limit:
+            csig = _cumulative_sig(csig, sig_ref)
+            
+            # Record the sub-threshold peak to match SigSpec output behavior
+            result_entry = dict(
+                freq=float(f_ref),
+                sig=float(sig_ref),
+                amp=float(abs(amp_ref)),
+                phase=float(ph_ref),
+                rms=float(rms),
+                csig=float(csig),
+            )
+            results.append(result_entry)
+
             if not cfg.quiet:
-                print(
-                    f"  iter {it:4d}: max sig = {sig0:.4f} < {cfg.sig_limit} "
-                    f"– stopping."
-                )
+                print(f"{it:4d} freq {f_ref:g}  sig {sig_ref:g}  rms {rms:g}  csig {csig:g}                ")
+
             # Write final spectrum
             if cfg.write_spectrum:
                 write_spectrum(outdir, freq_grid, sig_spec, amp_spec, ph_spec,
                                iteration=-1, stem=Path(cfg.input_file).stem)
             break
-
-        # 3) Refine frequency
-        f_ref, sig_ref, amp_ref, ph_ref = refine_frequency(
-            t, residual, f0, rms,
-            search_range=info["freq_step"],
-        )
 
         # 4) Append to parameter vector & global optimise
         new_params = np.append(all_params, [f_ref, amp_ref / 2.0, ph_ref])
@@ -213,22 +219,13 @@ def run_analysis(cfg: FACGConfig) -> list[dict]:
             sig=float(sig_ref),
             amp=float(abs(A_opt)),
             phase=float(p_opt),
-            rms=float(rms_new),
+            rms=float(rms),
             csig=float(csig),
         )
         results.append(result_entry)
 
-        iter_dt = time.time() - iter_t0
         if not cfg.quiet:
-            print(
-                f"  iter {it:4d}: freq {f_opt:14.9f}  "
-                f"sig {sig_ref:10.4f}  "
-                f"amp {abs(A_opt):12.9f}  "
-                f"phase {p_opt:7.3f}  "
-                f"rms {rms_new:12.9f}  "
-                f"csig {csig:10.4f}  "
-                f"[{iter_dt:.2f}s]"
-            )
+            print(f"{it:4d} freq {f_opt:g}  sig {sig_ref:g}  rms {rms:g}  csig {csig:g}                ")
             sys.stdout.flush()
 
         # 5) Intermediate outputs
@@ -244,9 +241,10 @@ def run_analysis(cfg: FACGConfig) -> list[dict]:
             write_phase_diagram(outdir, folded_phase, residual, f_opt, it)
 
         # Check cumulative sig limit
-        if cfg.csig_limit > 0 and csig < cfg.csig_limit:
+        if cfg.csig_limit > 0 and csig >= cfg.csig_limit:
             if not cfg.quiet:
-                print(f"  csig {csig:.4f} < {cfg.csig_limit} – stopping.")
+                print(f"  csig {csig:.4f} >= {cfg.csig_limit} "
+                      f"(limit reached) – stopping.")
             break
     else:
         # max_iter reached
@@ -282,10 +280,7 @@ def run_analysis(cfg: FACGConfig) -> list[dict]:
 
     total_dt = time.time() - total_t0
     if not cfg.quiet:
-        print("-" * 65)
-        print(f"  Detected frequencies : {len(results)}")
         print(f"  Total elapsed time   : {total_dt:.3f} s")
-        print("=" * 65)
 
     return results
 

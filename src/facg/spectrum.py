@@ -278,6 +278,7 @@ def make_freq_grid(
     t: np.ndarray,
     freq_low: float | None = None,
     freq_high: float | None = None,
+    freq_step: float | None = None,
     nyquist_coeff: float = 0.5,
     oversampling: float = 20.0,
 ) -> tuple[np.ndarray, dict]:
@@ -293,13 +294,17 @@ def make_freq_grid(
 
     rayleigh = 1.0 / T
     nyquist = nyquist_coeff / dt_med
-    fs = rayleigh / oversampling
+    fs = freq_step if freq_step is not None else rayleigh / oversampling
 
-    fl = freq_low if freq_low is not None else rayleigh
+    fl = freq_low if freq_low is not None else fs
     fh = freq_high if freq_high is not None else nyquist
 
-    if fl < fs:
+    # Enforce strictly positive start, but respect explicit freq_low
+    if freq_low is None and fl < fs:
         fl = fs
+    elif fl <= 0:
+        fl = 1e-15
+
     n_freq = int(np.ceil((fh - fl) / fs)) + 1
     grid = fl + np.arange(n_freq) * fs
 

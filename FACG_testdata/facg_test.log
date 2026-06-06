@@ -1,0 +1,359 @@
+ facg
+  ✓ GPU: Apple Metal (PyTorch 2.11.0)
+
+*** time series properties *********************************
+
+FACG_Test_01 points 5860, time base 120.299, rms dev 1.24205
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0083126377746976
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0004156318887349
+lower frequency limit                     0.0004156318887349
+upper frequency limit                     35.6811532148576376
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 85848
+
+*** running FACG *******************************************
+
+FACG_Test_01                                
+   1 freq 24.7375  sig 417.275  rms 1.24205  csig 417.275                
+   2 freq 23.9144  sig 379.61  rms 1.01824  csig 379.61                
+   3 freq 18.4239  sig 330.745  rms 0.852793  csig 330.745                
+   4 freq 26.0703  sig 94.8983  rms 0.733542  csig 94.8983                
+   5 freq 10.3188  sig 5.68008  rms 0.705614  csig 5.68008                
+   6 freq 26.5747  sig 3.86928  rms 0.704035  csig 3.86262                
+  Total elapsed time   : 3.999 s
+
+*** time series properties *********************************
+
+FACG_Test_02 points 8026, time base 82.184, rms dev 1.26343
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0121678144079285
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0006083907203964
+lower frequency limit                     0.0006083907203964
+upper frequency limit                     69.6087985521418773
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 114415
+
+*** running FACG *******************************************
+
+FACG_Test_02                                
+   1 freq 17.314  sig 971.319  rms 1.26343  csig 971.319                
+   2 freq 16.0054  sig 510.365  rms 0.840053  csig 510.365                
+   3 freq 20.3551  sig 656.172  rms 0.706317  csig 510.365                
+   4 freq 25.3436  sig 326.418  rms 0.557216  csig 326.418                
+   5 freq 33.4572  sig 239.827  rms 0.502393  csig 239.827                
+   6 freq 0.00420893  sig 11.4231  rms 0.46621  csig 11.4231                
+   7 freq 2.92206  sig 5.02848  rms 0.466128  csig 5.02848                
+   8 freq 29.2761  sig 3.83473  rms 0.465453  csig 3.80779                
+  Total elapsed time   : 8.560 s
+
+*** time series properties *********************************
+
+FACG_Test_03 points 5988, time base 207.533, rms dev 1.84139
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0048185037559972
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0002409251877999
+lower frequency limit                     0.0002409251877999
+upper frequency limit                     21.1059518784406066
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 87604
+
+*** running FACG *******************************************
+
+FACG_Test_03                                
+   1 freq 16.4907  sig 266.862  rms 1.84139  csig 266.862                
+   2 freq 13.8878  sig 198.484  rms 1.64157  csig 198.484                
+   3 freq 18.2887  sig 3.89169  rms 1.51089  csig 3.89169                
+  Total elapsed time   : 2.264 s
+
+*** time series properties *********************************
+
+FACG_Test_04 points 7230, time base 176.487, rms dev 1.44527
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0056661353172724
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0002833067658636
+lower frequency limit                     0.0002833067658636
+upper frequency limit                     29.4811320755008808
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 104061
+
+*** running FACG *******************************************
+
+FACG_Test_04                                
+   1 freq 10.4638  sig 672.559  rms 1.44527  csig 672.559                
+   2 freq 9.53992  sig 658.761  rms 1.09267  csig 658.761                
+   3 freq 22.1434  sig 1132.24  rms 0.832307  csig 658.761                
+   4 freq 9.68239  sig 578.677  rms 0.439029  csig 578.677                
+   5 freq 22.138  sig 350.136  rms 0.348813  csig 350.136                
+   6 freq 0.734929  sig 4.81456  rms 0.306739  csig 4.81456                
+  Total elapsed time   : 5.636 s
+
+*** time series properties *********************************
+
+FACG_Test_05 points 9892, time base 252.221, rms dev 1.41775
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0039647700524361
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0001982385026218
+lower frequency limit                     0.0001982385026218
+upper frequency limit                     29.1715285880777238
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 147154
+
+*** running FACG *******************************************
+
+FACG_Test_05                                
+   1 freq 0.93145  sig 669.181  rms 1.41775  csig 669.181                
+   2 freq 12.7062  sig 114.905  rms 1.17632  csig 114.905                
+   3 freq 24.3888  sig 64.3155  rms 1.14443  csig 64.3155                
+   4 freq 12.7242  sig 63.5028  rms 1.12716  csig 63.4406                
+   5 freq 4.30281  sig 3.98831  rms 1.11027  csig 3.98831                
+  Total elapsed time   : 9.482 s
+
+*** time series properties *********************************
+
+FACG_Test_06 points 8110, time base 217.147, rms dev 1.16889
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0046051793466604
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0002302589673330
+lower frequency limit                     0.0002302589673330
+upper frequency limit                     27.0401817100457187
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 117434
+
+*** running FACG *******************************************
+
+FACG_Test_06                                
+   1 freq 19.5597  sig 410.75  rms 1.16889  csig 410.75                
+   2 freq 18.8617  sig 409.665  rms 1.02347  csig 409.631                
+   3 freq 5.4387  sig 496.001  rms 0.896345  csig 409.631                
+   4 freq 5.82538  sig 420.396  rms 0.759686  csig 409.631                
+   5 freq 4.77837  sig 4.41189  rms 0.662655  csig 4.41189                
+  Total elapsed time   : 5.953 s
+
+*** time series properties *********************************
+
+FACG_Test_07 points 8639, time base 196.687, rms dev 1.98782
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0050842214760698
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0002542110738035
+lower frequency limit                     0.0002542110738035
+upper frequency limit                     31.7198502822928745
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 124778
+
+*** running FACG *******************************************
+
+FACG_Test_07                                
+   1 freq 20.3763  sig 524.944  rms 1.98782  csig 524.944                
+   2 freq 7.22159  sig 654.969  rms 1.68685  csig 524.944                
+   3 freq 0.660483  sig 744.03  rms 1.3607  csig 524.944                
+   4 freq 16.7594  sig 794.055  rms 1.05676  csig 524.944                
+   5 freq 15.5486  sig 6.12544  rms 0.802131  csig 6.12544                
+   6 freq 11.3089  sig 4.09715  rms 0.800841  csig 4.0931                
+  Total elapsed time   : 8.871 s
+
+*** time series properties *********************************
+
+FACG_Test_08 points 9305, time base 156.146, rms dev 1.78572
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0064042548024482
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0003202127401224
+lower frequency limit                     0.0003202127401224
+upper frequency limit                     43.6528723590127825
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 136325
+
+*** running FACG *******************************************
+
+FACG_Test_08                                
+   1 freq 38.7381  sig 660.813  rms 1.78572  csig 660.813                
+   2 freq 20.7053  sig 850.963  rms 1.46489  csig 660.813                
+   3 freq 39.6821  sig 1039.56  rms 1.11447  csig 660.813                
+   4 freq 39.6396  sig 887.404  rms 0.776185  csig 660.813                
+   5 freq 24.49  sig 270.301  rms 0.580735  csig 270.301                
+   6 freq 33.2999  sig 5.21742  rms 0.540399  csig 5.21742                
+   7 freq 41.0531  sig 4.4892  rms 0.539699  csig 4.41476                
+  Total elapsed time   : 11.055 s
+
+*** time series properties *********************************
+
+FACG_Test_09 points 6759, time base 274.057, rms dev 1.51077
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0036488813560571
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0001824440678029
+lower frequency limit                     0.0001824440678029
+upper frequency limit                     17.6934781839468016
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 96981
+
+*** running FACG *******************************************
+
+FACG_Test_09                                
+   1 freq 13.7437  sig 231.253  rms 1.51077  csig 231.253                
+   2 freq 2.98427  sig 3.9614  rms 1.38662  csig 3.9614                
+  Total elapsed time   : 2.742 s
+
+*** time series properties *********************************
+
+FACG_Test_10 points 6780, time base 265.984, rms dev 1.27213
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0037596272257421
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0001879813612871
+lower frequency limit                     0.0001879813612871
+upper frequency limit                     18.1957130899962713
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 96796
+
+*** running FACG *******************************************
+
+FACG_Test_10                                
+   1 freq 3.89915  sig 367.444  rms 1.27213  csig 367.444                
+   2 freq 10.2422  sig 4.16518  rms 1.10196  csig 4.16518                
+  Total elapsed time   : 2.140 s
+
+*** time series properties *********************************
+
+FACG_Test_11 points 9220, time base 253.543, rms dev 1.77517
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0039441111872079
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0001972055593604
+lower frequency limit                     0.0001972055593604
+upper frequency limit                     26.0484501172230480
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 132088
+
+*** running FACG *******************************************
+
+FACG_Test_11                                
+   1 freq 2.75419  sig 679.145  rms 1.77517  csig 679.145                
+   2 freq 6.76387  sig 801.402  rms 1.44287  csig 679.145                
+   3 freq 13.4769  sig 537.965  rms 1.11748  csig 537.965                
+   4 freq 1.94236  sig 607.708  rms 0.955535  csig 537.965                
+   5 freq 23.44  sig 703.584  rms 0.797123  csig 537.965                
+   6 freq 25.3626  sig 4.17963  rms 0.641761  csig 4.17963                
+  Total elapsed time   : 8.556 s
+
+*** time series properties *********************************
+
+FACG_Test_12 points 5491, time base 279.711, rms dev 1.74139
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0035751169174061
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0001787558458703
+lower frequency limit                     0.0001787558458703
+upper frequency limit                     14.2529325408734131
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 79735
+
+*** running FACG *******************************************
+
+FACG_Test_12                                
+   1 freq 5.92506  sig 4.26872  rms 1.74139  csig 4.26872                
+  Total elapsed time   : 0.996 s
+
+*** time series properties *********************************
+
+FACG_Test_13 points 9031, time base 287.824, rms dev 1.52646
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0034743462420827
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0001737173121041
+lower frequency limit                     0.0001737173121041
+upper frequency limit                     22.2950527278050927
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 128341
+
+*** running FACG *******************************************
+
+FACG_Test_13                                
+   1 freq 19.1862  sig 865.942  rms 1.52646  csig 865.942                
+   2 freq 12.6009  sig 707.736  rms 1.14067  csig 707.736                
+   3 freq 10.117  sig 365.993  rms 0.911894  csig 365.993                
+   4 freq 14.9043  sig 4.01022  rms 0.822338  csig 4.01022                
+  Total elapsed time   : 5.792 s
+
+*** time series properties *********************************
+
+FACG_Test_14 points 5582, time base 184.756, rms dev 1.53282
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0054125518169972
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0002706275908499
+lower frequency limit                     0.0002706275908499
+upper frequency limit                     21.8579234972686294
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 80768
+
+*** running FACG *******************************************
+
+FACG_Test_14                                
+   1 freq 13.9024  sig 433.851  rms 1.53282  csig 433.851                
+   2 freq 6.07404  sig 427.739  rms 1.22817  csig 427.739                
+   3 freq 5.76121  sig 4.06213  rms 0.987689  csig 4.06213                
+  Total elapsed time   : 2.055 s
+
+*** time series properties *********************************
+
+FACG_Test_15 points 8967, time base 292.848, rms dev 1.37989
+
+*** preparing to run FACG **********************************
+
+Rayleigh frequency resolution             0.0034147415457931
+oversampling ratio                        20.0000000000000000
+frequency spacing                         0.0001707370772897
+lower frequency limit                     0.0001707370772897
+upper frequency limit                     21.8708308728671099
+Nyquist coefficient                       0.5000000000000000
+number of frequencies                 128097
+
+*** running FACG *******************************************
+
+FACG_Test_15                                
+   1 freq 0.639283  sig 601.527  rms 1.37989  csig 601.527                
+   2 freq 21.3483  sig 529.239  rms 1.14703  csig 529.239                
+   3 freq 11.5479  sig 375.026  rms 0.978758  csig 375.026                
+   4 freq 20.5196  sig 146.882  rms 0.879399  csig 146.882                
+   5 freq 3.3601  sig 4.55835  rms 0.845577  csig 4.55835                
+  Total elapsed time   : 6.908 s
+
+===== Total processing time: 85.013 s =====
+
