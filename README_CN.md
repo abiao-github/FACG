@@ -1,6 +1,6 @@
-# FACG — 基于CPU与GPU混合计算的频域分析工具
+# 基于CPU与GPU混合计算的频率分析工具FACG
 
-FACG 是一款为天文时间序列数据设计的、支持 GPU 加速的迭代预白化（Iterative Prewhitening）频域分析工具，其算法核心与数学模型灵感来源于 [SigSpec](http://www.astro.univie.ac.at/SigSpec) (Reegen 2007, A&A 467, 1353)。
+FACG (Frequency Analysis tool of CPU and GPU mixed computing)是一款为天文时间序列数据设计的、支持 GPU 加速的迭代预白化（Iterative Prewhitening）频域分析工具，其算法核心与数学模型灵感来源于 [SigSpec](http://www.astro.univie.ac.at/SigSpec) (Reegen 2007, A&A 467, 1353)。
 
 FACG 实现了完整的 SigSpec 数据处理管线——包括频谱显著性估计、迭代预白化以及全局多重正弦非线性优化——同时利用计算后端的 GPU 为计算密集型任务提供深度加速。如果系统中未检测到可用的 GPU，程序将透明、平滑地降级回基于 CPU (NumPy) 的运算模式。
 

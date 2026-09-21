@@ -2,7 +2,7 @@
 title: "FACG 软件性能测评报告"
 date: "2024-05-xx"
 ---
-# FACG 软件性能测评报告 (Apple Silicon 深度测试版)
+# FACG 软件性能测评报告 
 
 ## 1. 测评概述
 

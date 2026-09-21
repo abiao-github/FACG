@@ -1,4 +1,4 @@
-# FACG — Frequency Analysis of CPU and GPU mixed computing
+# FACG — Frequency Analysis Tool of CPU and GPU mixed computing
 
 A GPU-accelerated iterative prewhitening frequency analysis tool for
 astronomical time-series data, inspired by
