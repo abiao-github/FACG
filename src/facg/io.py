@@ -1,8 +1,8 @@
 """
-Flexible file I/O for FACG.
+FACG 的时间序列输入与结果文件输出。
 
-- Reads multiple formats: text/dat/csv, excel, fits table (no header required).
-- Output files use descriptive names.
+读取端支持文本、DAT、CSV、Excel 和 FITS 表格，并根据列号提取时间与观测值；
+写入端负责统一结果表、频谱、残差以及折叠相位数据的文件格式。
 """
 
 from __future__ import annotations
@@ -22,20 +22,20 @@ def read_timeseries(
     time_col: int = 0,
     data_col: int = 1,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Load a two-column (or more) time-series file.
+    """读取时间序列文件，并按时间从小到大返回两列数据。
 
     Parameters
     ----------
     filepath : path-like
-        Any readable text file with at least *time_col* and *data_col*
-        numeric columns.
+        待读取文件路径。根据扩展名选择文本、CSV、Excel 或 FITS 表格读取方式。
     time_col, data_col : int
-        0-based column indices.
+        时间列和观测值列的零起始索引，两列必须包含可转换为浮点数的数据。
 
     Returns
     -------
     t, x : 1-D float64 arrays
-        Time stamps and observed values, sorted by time.
+        已排序的时间戳和观测值数组。若文件不存在、格式无法解析或指定列缺失，
+        会抛出相应异常。
     """
     filepath = Path(filepath)
     if not filepath.is_file():
@@ -98,7 +98,20 @@ def read_timeseries(
 # ---------------------------------------------------------------------------
 
 def _header(label: str, cfg_summary: str = "") -> str:
-    """Build a standard FACG header comment block."""
+    """构造输出数据文件使用的统一 FACG 注释头。
+
+    参数
+    ----
+    label:
+        当前输出内容的名称，用于标识 FACG 文件类型。
+    cfg_summary:
+        可选的配置摘要；为空时只写入名称行。
+
+    返回
+    ----
+    str
+        以换行符结尾的注释文本块。
+    """
     lines = [
         f"# FACG — {label}",
         f"# {cfg_summary}" if cfg_summary else "",
@@ -111,9 +124,10 @@ def write_result(
     results: list[dict],
     stem: str = "result",
 ) -> Path:
-    """Write the main frequency result table.
+    """将每轮检测到的频率参数写入主结果表。
 
-    Columns: freq  sig  amp  phase  rms  csig
+    输出列依次为频率、显著性、振幅、相位、当前残差标准差和累积显著性。
+    文件保存为 ``<stem>.dat``，返回实际输出路径。
     """
     outpath = outdir / f"{stem}.dat"
     with open(outpath, "w") as f:
@@ -137,9 +151,10 @@ def write_spectrum(
     iteration: int,
     stem: str = "spectrum",
 ) -> Path:
-    """Write the significance / amplitude spectrum at a given iteration.
+    """写出指定迭代轮次的显著性、振幅与相位频谱。
 
-    Columns: freq  sig  amplitude  phase
+    迭代编号为负数时文件名使用 ``_final``，否则使用四位补零的轮次编号。
+    输出列依次为频率、显著性、振幅和相位。
     """
     if iteration < 0:
         outpath = outdir / f"{stem}_final.dat"
@@ -159,7 +174,11 @@ def write_residuals(
     iteration: int,
     stem: str = "residuals",
 ) -> Path:
-    """Write a residual time-series."""
+    """将时间戳及对应残差写入文本文件。
+
+    迭代编号为负数时写入最终残差文件，否则在文件名中标记当前轮次；
+    返回写出文件的路径。
+    """
     if iteration < 0:
         outpath = outdir / f"{stem}_final.dat"
     else:
@@ -177,7 +196,11 @@ def write_phase_diagram(
     freq: float,
     iteration: int,
 ) -> Path:
-    """Write a folded phase diagram for a single frequency."""
+    """写出单个频率对应的折叠相位与数据值。
+
+    输出文件名包含迭代轮次和频率，文件两列分别为相位和传入的数据值；
+    返回写出文件的路径。
+    """
     outpath = outdir / f"phase_{iteration:04d}_f{freq:.6f}.dat"
     out = np.column_stack([phase, data])
     np.savetxt(outpath, out, fmt="%24.16e",

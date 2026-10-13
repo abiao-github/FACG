@@ -1,16 +1,10 @@
 """
-Spectral analysis engine — GPU-accelerated where possible.
+FACG 频谱分析核心算法，支持可选 GPU 加速。
 
-This module implements the core algorithms that SigSpec uses:
-
-1. **Batch DFT significance spectrum** with GPU acceleration.
-2. **SigSpec significance** computed via the analytic false-alarm
-   probability formula (Reegen 2007, A&A 467, 1353).
-3. **Frequency refinement** by bisection search around the DFT peak
-   (equivalent to SigSpec's ``SigSpec_MaxSig``).
-
-All functions accept plain NumPy arrays; GPU transfer is handled
-internally via :mod:`facg.backend`.
+本模块批量计算给定频率网格上的 SigSpec 显著性、振幅和相位，并提供单频率
+显著性评估、峰值频率细化以及标准频率网格构造功能。显著性遵循 Reegen
+(2007, A&A 467, 1353) 的解析虚警概率公式。公开计算函数接收 NumPy 数组，
+设备数据传输由 :mod:`facg.backend` 负责。
 """
 
 from __future__ import annotations
@@ -32,26 +26,24 @@ def compute_significance_spectrum(
     freq_grid: np.ndarray,
     rms: float | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Compute the SigSpec *significance* at every frequency in *freq_grid*.
+    """计算频率网格上每个频点的 SigSpec 显著性、振幅和相位。
 
-    The SigSpec significance is (Reegen 2007, eq. 2):
-
-        sig(f) = N · lg(e) / σ² · [ (a·cos θ₀ + b·sin θ₀)² / α₀
-                                   + (a·sin θ₀ - b·cos θ₀)² / β₀ ]
-
-    where α₀, β₀ are the sampling-profile axes and θ₀ the tilt angle.
+    显著性根据 Reegen (2007) 的采样剖面解析公式计算。频率维度会分块处理，
+    以限制显存占用；有 GPU 时矩阵运算在设备执行，输出统一转换回 NumPy。
 
     Parameters
     ----------
-    t, x : time and data arrays (host memory).
-    freq_grid : frequency grid (host).
-    rms : pre-computed rms; if None it is derived from *x*.
+    t, x:
+        主机内存中的时间戳和观测值数组。
+    freq_grid:
+        要评估的频率网格。
+    rms:
+        数据标准差；若未提供则由 ``x`` 计算。零值会替换为极小正数以避免除零。
 
     Returns
     -------
-    sig : (M,) significance
-    amp : (M,) amplitude
-    phase : (M,) phase
+    tuple[np.ndarray, np.ndarray, np.ndarray]
+        三个形状均为 ``(M,)`` 的数组，依次为显著性、振幅和相位（弧度）。
     """
     N = len(t)
     if rms is None:
@@ -137,8 +129,11 @@ def _sig_single(
     rms: float,
     N: int,
 ) -> float:
-    """Ultra-fast significance at a single frequency — pure NumPy,
-    no GPU transfer overhead, no chunking."""
+    """用纯 NumPy 计算单个频率的 SigSpec 显著性。
+
+    此轻量实现供频率细化循环反复调用，避免每次评估都产生 GPU 数据传输或
+    分块调度开销。``N`` 为采样点数，``rms`` 为当前数据的标准差。
+    """
     phi = 2.0 * np.pi * freq * t
     cos_phi = np.cos(phi)
     sin_phi = np.sin(phi)
@@ -178,9 +173,10 @@ def sig_at_freq(
     freq: float,
     rms: float,
 ) -> tuple[float, float, float]:
-    """Evaluate SigSpec significance at a *single* frequency.
+    """计算指定频率处的显著性、振幅和相位。
 
-    Returns (sig, amp, phase).
+    根据离散傅里叶系数求得振幅和相位，并通过单频率快速实现计算显著性。
+    返回值依次为显著性、振幅和相位（弧度）。
     """
     N = len(t)
     phi = 2.0 * np.pi * freq * t
@@ -207,25 +203,30 @@ def refine_frequency(
     tol: float = 1e-12,
     max_refine_iter: int = 80,
 ) -> tuple[float, float, float, float]:
-    """Refine a frequency by maximising significance in a narrow window.
+    """在初始频率附近搜索显著性峰值并细化频率估计。
 
-    This implements the same bisection-style search as
-    ``SigSpec_MaxSig`` in *SigSpec.c*: at each step the search range
-    is halved, converging on the true peak.
+    搜索区间按二分方式逐步缩小，行为对应 SigSpec 的 ``SigSpec_MaxSig``。
+    达到容差或最大迭代次数后，使用最终频率重新计算完整峰值属性。
 
     Parameters
     ----------
-    t, x : time and data arrays.
-    f0 : initial frequency guess.
-    rms : current residual rms.
-    search_range : initial half-width of the search bracket.
-        Defaults to the frequency spacing ``fs``.
-    tol : convergence tolerance on the search radius.
-    max_refine_iter : safety limit.
+    t, x:
+        当前时间戳和数据（通常为残差）。
+    f0:
+        频谱扫描得到的初始峰值频率。
+    rms:
+        当前数据的标准差。
+    search_range:
+        搜索初始半宽；未指定时取时间跨度倒数。
+    tol:
+        搜索半宽的收敛容差。
+    max_refine_iter:
+        细化循环的最大次数，用作终止保护。
 
     Returns
     -------
-    freq, sig, amp, phase : refined values.
+    tuple[float, float, float, float]
+        细化后的频率、显著性、振幅和相位（弧度）。
     """
     if search_range is None:
         T = t[-1] - t[0]
@@ -282,12 +283,27 @@ def make_freq_grid(
     nyquist_coeff: float = 0.5,
     oversampling: float = 20.0,
 ) -> tuple[np.ndarray, dict]:
-    """Construct the frequency evaluation grid.
+    """根据采样时间和用户设置构造待评估的频率网格。
+
+    默认步长为 Rayleigh 分辨率除以过采样倍数，下限默认取该步长，上限默认
+    取 ``nyquist_coeff / median(|Δt|)``。函数不修改输入时间数组。
+
+    参数
+    ----
+    t:
+        按时间排序的采样时间数组。
+    freq_low, freq_high, freq_step:
+        可选的频率下限、上限和网格间距；未提供时使用上述默认值。
+    nyquist_coeff:
+        Nyquist 上限系数。
+    oversampling:
+        Rayleigh 分辨率的过采样倍数。
 
     Returns
     -------
-    grid : (M,) array of frequencies.
-    info : dict with Rayleigh resolution, Nyquist freq, etc.
+    tuple[np.ndarray, dict]
+        频率网格以及包含 Rayleigh 分辨率、Nyquist 频率、步长、上下限、
+        点数、时间跨度和中位采样间隔等信息的字典。
     """
     T = t[-1] - t[0]
     dt_med = np.median(np.abs(np.diff(t)))

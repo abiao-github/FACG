@@ -1,26 +1,15 @@
 """
-GPU-accelerated multi-sine global optimiser.
+FACG 多正弦模型的全局参数优化器。
 
-After each prewhitening iteration SigSpec (and FACG) perform a
-*simultaneous* least-squares fit of **all** detected frequencies,
-amplitudes and phases to the *original* data.  This is the most
-CPU-intensive part of the pipeline.
+每轮预白化后，对原始（已去均值）数据中的所有已检测频率、振幅和相位执行
+联合最小二乘拟合，以避免逐个拟合造成的参数偏差。
 
-GPU acceleration strategy
-~~~~~~~~~~~~~~~~~~~~~~~~~
-The Jacobian matrix of the multi-sine model
+多正弦模型及其解析 Jacobian 可向量化计算。可用 GPU 时由设备计算模型和
+Jacobian，再交由 SciPy 的 Levenberg–Marquardt 求解器更新参数；否则完全在
+CPU 上计算。
 
-    y(t) = Σ_k  A_k · sin(2π f_k t + φ_k)
-
-has analytic partial derivatives that are trivially vectorisable:
-
-    ∂y/∂f_k  = 2π t A_k cos(2π f_k t + φ_k)
-    ∂y/∂A_k  = sin(2π f_k t + φ_k)
-    ∂y/∂φ_k  = A_k cos(2π f_k t + φ_k)
-
-We compute the full Jacobian on the GPU in one shot, then run
-Levenberg–Marquardt on the CPU using ``scipy.optimize.least_squares``
-with the GPU-computed Jacobian.
+模型形式为 ``y(t) = Σ A_k sin(2π f_k t + φ_k)``；频率、振幅、相位的
+偏导数构成可直接计算的解析 Jacobian。
 """
 
 from __future__ import annotations
@@ -36,7 +25,11 @@ from facg.backend import xp, to_device, to_host, use_gpu
 # ------------------------------------------------------------------
 
 def _model_cpu(t: np.ndarray, params: np.ndarray) -> np.ndarray:
-    """Evaluate  y = Σ A_k sin(2π f_k t + φ_k)  on the CPU."""
+    """在 CPU 上根据参数向量计算多正弦模型值。
+
+    参数向量按 ``[f1, A1, φ1, f2, A2, φ2, ...]`` 排列，输出数组与时间数组
+    ``t`` 等长。
+    """
     n_sig = len(params) // 3
     y = np.zeros_like(t)
     for k in range(n_sig):
@@ -46,9 +39,10 @@ def _model_cpu(t: np.ndarray, params: np.ndarray) -> np.ndarray:
 
 
 def _model_gpu(t_d, params: np.ndarray):
-    """Evaluate the multi-sine model on the GPU.
+    """在当前设备上计算多正弦模型，并返回设备数组。
 
-    Returns a *device* array.
+    ``t_d`` 应已位于目标设备；参数向量在函数内传输一次。参数排列与
+    :func:`_model_cpu` 相同。
     """
     n_sig = len(params) // 3
     p_d = to_device(params)
@@ -67,7 +61,11 @@ def _model_gpu(t_d, params: np.ndarray):
 # ------------------------------------------------------------------
 
 def _jacobian_gpu(t_d, params: np.ndarray):
-    """Compute the (N, 3K) Jacobian on the GPU; return as NumPy."""
+    """在设备上计算多正弦模型的解析 Jacobian，并将结果转回 NumPy。
+
+    返回矩阵形状为 ``(N, 3K)``，每组三列依次对应一个信号的频率、振幅和
+    相位偏导数，列顺序与参数向量一致。
+    """
     n_sig = len(params) // 3
     p_d = to_device(params)
     N = len(t_d)
@@ -86,7 +84,10 @@ def _jacobian_gpu(t_d, params: np.ndarray):
 
 
 def _jacobian_cpu(t: np.ndarray, params: np.ndarray) -> np.ndarray:
-    """CPU fallback for the Jacobian."""
+    """使用 NumPy 计算解析 Jacobian，作为无 GPU 时的回退实现。
+
+    返回 ``(N, 3K)`` 矩阵，每组三列对应一个信号参数的偏导数。
+    """
     n_sig = len(params) // 3
     N = len(t)
     J = np.empty((N, 3 * n_sig), dtype=np.float64)
@@ -114,21 +115,26 @@ def global_optimize(
     xtol: float = 1e-12,
     gtol: float = 1e-12,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Perform a global Levenberg–Marquardt optimisation of all
-    frequency / amplitude / phase parameters simultaneously.
+    """通过 Levenberg–Marquardt 联合优化全部信号参数。
 
     Parameters
     ----------
-    t : (N,) time stamps.
-    x_orig : (N,) *original* (un-prewhitened) data.
-    params0 : (3K,) initial guess [f1, A1, φ1, f2, A2, φ2, ...].
-    max_nfev : maximum function evaluations.
-    ftol, xtol, gtol : convergence tolerances.
+    t:
+        ``(N,)`` 时间戳数组。
+    x_orig:
+        ``(N,)`` 原始去均值数据，而非某轮预白化后的残差。
+    params0:
+        ``(3K,)`` 初始参数向量，顺序为 ``[f1, A1, φ1, ...]``。
+    max_nfev:
+        求解器允许的最大函数评估次数。
+    ftol, xtol, gtol:
+        分别控制目标函数、参数变化和梯度的收敛容差。
 
     Returns
     -------
-    params_opt : (3K,) optimised parameters.
-    residuals : (N,) final residuals  x_orig − model(t, params_opt).
+    tuple[np.ndarray, np.ndarray]
+        优化后的参数向量，以及 ``x_orig - model(t, params_opt)`` 残差。
+        当没有待优化参数时，返回参数和数据的副本。
     """
     if len(params0) == 0:
         return params0.copy(), x_orig.copy()
@@ -140,6 +146,7 @@ def global_optimize(
         t_d = t
 
     def _residual_fun(p):
+        """计算给定参数下的数据减去模型值，供最小二乘求解器使用。"""
         if use_gpu():
             model = to_host(_model_gpu(t_d, p))
         else:
@@ -147,6 +154,7 @@ def global_optimize(
         return x_orig - model
 
     def _jac_fun(p):
+        """返回残差对参数的 Jacobian；因残差为数据减模型，需对模型导数取负。"""
         if use_gpu():
             J = _jacobian_gpu(t_d, p)
         else:

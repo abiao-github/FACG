@@ -1,28 +1,16 @@
 #!/usr/bin/env python3
 """
-FACG command-line entry point.
+FACG 命令行程序入口。
 
-Usage
------
-::
+支持单文件或多文件分析、通配符匹配、配置文件默认值、测试数据生成以及
+可选汇总图。命令行参数优先于 ``facg.conf`` 中的同名配置。
 
-    # Analyse a single file
-    facg  data.dat
+示例::
 
-    # Analyse a single file with custom settings
-    facg  data.dat  --sig-limit 6 --oversampling 40 --output-dir ./results
-
-    # Analyse multiple files
-    facg  file1.dat file2.dat file3.dat
-
-    # Enable summary plots
-    facg  data.dat  --plot
-
-    # Quiet mode
-    facg  data.dat  -q
-
-    # Show help
-    facg  --help
+    facg data.dat
+    facg data.dat --sig-limit 6 --oversampling 40 --output-dir ./results
+    facg file1.dat file2.dat --plot
+    facg --help
 """
 
 from __future__ import annotations
@@ -41,6 +29,16 @@ from facg.testdata import generate_all_test_data
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """创建并返回 FACG 命令行参数解析器。
+
+    参数分组覆盖输入文件、频率网格、迭代停止条件、结果输出、后端选择及
+    辅助数据生成等选项。配置文件默认值会在解析命令行之前注入。
+
+    返回
+    ----
+    argparse.ArgumentParser
+        配置完成的参数解析器。
+    """
     p = argparse.ArgumentParser(
         prog="facg",
         description=(
@@ -150,6 +148,20 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """解析命令行参数并依次处理指定的输入文件。
+
+    参数
+    ----
+    argv:
+        可选的参数字符串列表。未提供时读取 ``sys.argv``，便于 CLI 调用和
+        程序化测试。
+
+    返回
+    ----
+    int
+        进程退出状态码；输入文件列表为空等命令行级错误返回非零值，分析完成
+        后返回 0。单个文件处理异常会打印错误并继续处理其余文件。
+    """
     if argv is None:
         argv = sys.argv[1:]
 

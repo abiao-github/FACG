@@ -1,5 +1,8 @@
 """
-Handles reading and writing of the 'facg.conf' configuration file.
+负责生成和读取 ``facg.conf`` 配置文件。
+
+配置文件中填写的值会转换为与命令行参数 ``dest`` 同名的键，供 CLI
+设置解析器默认值；命令行显式提供的参数仍可覆盖这些默认设置。
 """
 
 import configparser
@@ -10,7 +13,14 @@ CONFIG_FILENAME = "facg.conf"
 
 
 def generate_default_config(filepath=CONFIG_FILENAME):
-    """Generates a default configuration file with comments."""
+    """在指定路径生成带说明的默认配置文件。
+
+    参数
+    ----
+    filepath:
+        目标文件路径，默认为当前目录中的 ``facg.conf``。写入成功或失败时
+        会向标准输出打印提示信息。
+    """
     defaults = FACGConfig()
 
     content = f"""# FACG Configuration File
@@ -83,9 +93,18 @@ plot = {defaults.plot}
 
 
 def load_config_for_argparse(filepath=CONFIG_FILENAME):
-    """
-    Loads configuration from a file and returns a dictionary with keys
-    matching argparse 'dest' names.
+    """读取配置文件并转换为 argparse 可使用的默认参数字典。
+
+    参数
+    ----
+    filepath:
+        配置文件路径，默认读取当前目录的 ``facg.conf``。
+
+    返回
+    ----
+    dict
+        键与命令行解析器的参数 ``dest`` 对应。文件不存在或某个配置项为空时，
+        对应值不会覆盖解析器的内置默认值；非法值会给出警告并忽略。
     """
     config_path = Path(filepath)
     if not config_path.is_file():
@@ -97,6 +116,11 @@ def load_config_for_argparse(filepath=CONFIG_FILENAME):
     settings = {}
 
     def set_if_present(section, key, type_func, dest_key=None):
+        """读取并转换一个非空配置项，转换失败时保留程序默认值。
+
+        ``type_func`` 可以是常规类型转换器，也可以是 ``bool`` 或
+        ``inv_bool`` 这两个标记；后者用于映射命令行中的正向/反向开关。
+        """
         if parser.has_option(section, key):
             val_str = parser.get(section, key)
             if val_str is not None and val_str.strip() != '':

@@ -1,17 +1,15 @@
 """
-Iterative prewhitening cascade — the main FACG analysis loop.
+迭代预白化流程：FACG 分析的主控模块。
 
-This mirrors the ``SigSpec_Cascade`` function in *SigSpec.c*:
+本模块按以下步骤重复提取显著频率，与 SigSpec 的 ``SigSpec_Cascade`` 流程
+相对应：
 
-1. Compute the significance spectrum on the current residual.
-2. Find the frequency with the highest significance.
-3. Refine the frequency via bisection search.
-4. Globally re-optimise *all* detected frequencies/amplitudes/phases.
-5. Subtract the optimised model → new residual.
-6. Repeat until ``sig < sig_limit`` or ``max_iter`` reached.
+1. 计算当前残差的显著性频谱并定位最高峰；
+2. 细化峰值频率，联合优化全部已检测信号的频率、振幅和相位；
+3. 根据拟合模型更新残差并记录本轮结果；
+4. 达到显著性阈值、累积显著性阈值或最大迭代次数时停止。
 
-Throughout the loop, intermediate results / spectra / residuals are
-written to disk according to the configuration.
+迭代期间的频谱、残差、相位折叠数据和绘图均由配置项控制。
 """
 
 from __future__ import annotations
@@ -44,15 +42,13 @@ from facg.optimizer import global_optimize
 # ------------------------------------------------------------------
 
 def _cumulative_sig(csig_prev: float, sig_new: float) -> float:
-    """Combine cumulative significance with a new detection.
+    """将本轮显著性合并到已有的累积显著性中。
 
-    Implements the same formula as ``SigSpec_CSig`` in *SigSpec.c*:
+    计算方式与 SigSpec 的 ``SigSpec_CSig`` 一致。通过按较小显著性因子化虚警
+    概率，避免直接计算极小概率时的浮点下溢。
 
-        csig = -log10(1 - (1 - 10^{-csig_prev}) * (1 - 10^{-sig_new}))
-
-    To prevent float64 underflow for very large significances, we expand:
-        FAP_comb = 10^{-csig} + 10^{-sig} - 10^{-(csig + sig)}
-    Factoring out 10^{-min(csig, sig)} yields a highly stable form.
+    参数为之前的累积显著性和新检测的显著性；若没有正的历史累积值，则直接
+    返回新显著性。
     """
     if csig_prev <= 0:
         return sig_new
@@ -72,18 +68,20 @@ def _cumulative_sig(csig_prev: float, sig_new: float) -> float:
 # ------------------------------------------------------------------
 
 def run_analysis(cfg: FACGConfig) -> list[dict]:
-    """Execute a full FACG frequency analysis.
+    """根据配置执行一次完整的 FACG 频率分析。
 
     Parameters
     ----------
     cfg : FACGConfig
-        Fully populated configuration object.
+        输入输出、频率网格、停止条件和可选输出设置。
 
     Returns
     -------
     results : list of dict
-        One entry per detected frequency, each containing keys:
-        ``freq``, ``sig``, ``amp``, ``phase``, ``rms``, ``csig``.
+        每项记录一次检测结果，包含 ``freq``（频率）、``sig``（显著性）、
+        ``amp``（振幅）、``phase``（相位）、``rms``（残差标准差）和
+        ``csig``（累积显著性）。分析过程中按配置写出结果文件，输入或计算错误
+        会由相关读取/计算函数抛出。
     """
     total_t0 = time.time()
 
@@ -302,7 +300,12 @@ def _generate_summary_plot(
     sig_spec: np.ndarray | None,
     results: list[dict],
 ) -> None:
-    """Generate a 4-panel summary plot and save as PNG."""
+    """生成并保存四联汇总图，展示拟合效果和最终残差频谱。
+
+    四个面板分别绘制原始数据及多正弦模型、残差、残差振幅频谱和残差显著性
+    频谱；图像保存为输出目录下的 ``<stem>_summary.png``。使用 Matplotlib 的
+    非交互式 Agg 后端，适合命令行批处理。
+    """
     import matplotlib
     matplotlib.use("Agg")  # non-interactive backend
     import matplotlib.pyplot as plt

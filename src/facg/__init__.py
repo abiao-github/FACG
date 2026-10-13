@@ -1,8 +1,8 @@
 """
-FACG — Frequency Analysis of CPU and GPU mixed computing.
+FACG — CPU 与 GPU 混合计算的频率分析工具。
 
-A GPU-accelerated iterative prewhitening frequency analysis tool
-inspired by SigSpec (Reegen 2007).
+本包提供受 SigSpec（Reegen 2007）启发的迭代预白化频率分析功能，
+并通过统一计算后端在可用时利用 GPU 加速。
 """
 
 __version__ = "0.1.0"

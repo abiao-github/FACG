@@ -1,8 +1,30 @@
+"""生成 FACG 性能测试使用的模拟时间序列及其真实参数记录。
+
+测试数据采用非均匀时间采样，由若干正弦信号叠加高斯噪声构成；
+固定随机种子以便在相同参数下复现数据。
+"""
+
 import os
 import numpy as np
 
 def generate_single_file(filename, n_points, time_span, signals, noise_level=0.1):
-    """生成单份非均匀采样的时间序列测试数据。"""
+    """生成并保存一份由多正弦信号和噪声组成的测试数据。
+
+    参数
+    ----
+    filename:
+        输出文件路径。
+    n_points:
+        随机生成的采样点数量。
+    time_span:
+        采样时间范围，时间戳在 ``[0, time_span)`` 内均匀抽取后排序。
+    signals:
+        信号参数序列，每项依次为频率、振幅和相位（弧度）。
+    noise_level:
+        加性高斯噪声的标准差，默认为 0.1。
+
+    结果以两列文本格式写入文件，并打印生成概要。
+    """
     t = np.sort(np.random.uniform(0, time_span, n_points))
     y = np.zeros_like(t)
     for freq, amp, phase in signals:
@@ -13,9 +35,19 @@ def generate_single_file(filename, n_points, time_span, signals, noise_level=0.1
     print(f"✅ 生成完毕: {filename} (点数: {n_points}, 信号数: {len(signals)}, 时间跨度: {time_span})")
 
 def generate_all_test_data(output_dir=".", num_files=3, num_signals=5):
-    """
-    生成用于 SigSpec 与 FACG 性能对比的测试数据。
-    用户可指定生成的文件数量以及每个文件注入的真实频率信号数量。
+    """批量生成性能对比数据集并保存信号真实参数。
+
+    参数
+    ----
+    output_dir:
+        测试数据和参数记录文件的输出目录，默认为当前目录。
+    num_files:
+        要生成的数据文件数量。小于 1 时仍生成一份文件。
+    num_signals:
+        每份数据注入的正弦信号数量。小于 1 时仍注入一个信号。
+
+    函数会固定 NumPy 随机种子，以便复现实验；除各个数据文件外，还会生成
+    ``frequency_record.log``，按振幅降序记录每个文件的频率、振幅和相位。
     """
     print(f"正在生成 FACG 与 SigSpec 性能对比测试数据 ({num_files} 个文件, 每个注入 {num_signals} 个频率)...\n")
     

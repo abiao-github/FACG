@@ -1,13 +1,11 @@
 """
-Unified CPU/GPU computing backend.
+FACG 的 CPU/GPU 统一计算后端。
 
-Provides a transparent wrapper:
-- On systems with an NVIDIA GPU and CuPy, it uses CUDA.
-- On Apple Silicon systems with PyTorch, it uses the Metal (MPS) backend.
-- Otherwise, it falls back to NumPy on the CPU.
+优先使用 CuPy/CUDA（NVIDIA）、其次使用 PyTorch/MPS（Apple Silicon），
+若加速后端不可用则回退到 CPU 上的 NumPy。
 
-All heavy-lifting functions in FACG use ``xp`` from this module so that
-the rest of the code is backend-agnostic.
+模块提供兼容不同数组库的 ``xp`` 包装对象，以及主机与设备间的数据转换函数，
+使上层计算代码尽量不依赖具体后端。
 """
 
 import sys
@@ -21,12 +19,27 @@ import shutil
 # Backend Abstraction Layer to smooth over API differences (e.g. axis/dim)
 # ---------------------------------------------------------------------------
 class _BackendWrapper:
-    """A wrapper to unify calls to numpy, cupy, and pytorch."""
+    """适配 NumPy、CuPy 和 PyTorch 常用数组操作差异的轻量包装器。"""
+
     def __init__(self, lib, is_torch=False):
+        """记录底层数组库及其是否为 PyTorch。
+
+        参数
+        ----
+        lib:
+            NumPy、CuPy 或 PyTorch 模块对象。
+        is_torch:
+            底层模块为 PyTorch 时设为 True，以启用参数名和设备兼容处理。
+        """
         self._lib = lib
         self._is_torch = is_torch
 
     def __getattr__(self, name):
+        """将未显式适配的属性和函数转交给底层数组库。
+
+        PyTorch MPS 的浮点运算使用 float32，因此请求 ``float64`` 时返回
+        ``torch.float32``；其他名称按原样转发。
+        """
         # MPS does not support float64, use float32 instead
         if self._is_torch and name == "float64":
             return getattr(self._lib, "float32")
@@ -34,25 +47,30 @@ class _BackendWrapper:
 
     @property
     def pi(self):
+        """返回高精度常量 π，避免依赖后端的常量实现差异。"""
         # torch.pi is available from 1.7, but np.pi is safer
         return np.pi
 
     def sum(self, *args, **kwargs):
+        """调用后端求和，并将通用参数 ``axis`` 适配为 PyTorch 的 ``dim``。"""
         if self._is_torch and 'axis' in kwargs:
             kwargs['dim'] = kwargs.pop('axis')
         return self._lib.sum(*args, **kwargs)
 
     def zeros(self, *args, **kwargs):
+        """创建零值数组；使用 PyTorch 时自动将其放置在 MPS 设备上。"""
         if self._is_torch:
             kwargs['device'] = 'mps'
         return self._lib.zeros(*args, **kwargs)
 
     def empty(self, *args, **kwargs):
+        """创建未初始化数组；使用 PyTorch 时自动将其放置在 MPS 设备上。"""
         if self._is_torch:
             kwargs['device'] = 'mps'
         return self._lib.empty(*args, **kwargs)
 
     def maximum(self, x1, x2):
+        """逐元素取较大值，并处理 PyTorch 不接受标量张量混用的情形。"""
         if self._is_torch:
             if not isinstance(x2, self._lib.Tensor):
                 return self._lib.clamp(x1, min=x2)
@@ -77,7 +95,11 @@ _BACKEND_INITIALIZED = False
 
 
 def _detect_hardware():
-    """Detect physical GPU hardware natively, without relying on CuPy/PyTorch."""
+    """在不导入 GPU 数组库的情况下粗略识别可用 GPU 硬件类型。
+
+    返回 ``"apple"``、``"nvidia"`` 或 ``"none"``。检测结果用于决定尝试
+    哪种加速后端，并不代表驱动或对应 Python 依赖已成功初始化。
+    """
     if platform.system() == "Darwin" and platform.machine() == "arm64":
         return "apple"
         
@@ -96,19 +118,16 @@ def _detect_hardware():
 
 
 def initialize_backend(force_cpu: bool = False):
-    """
-    Detect and initialize the computing backend.
+    """检测并初始化全局计算后端。
 
-    This function sets the global `xp` object to the best available backend.
-    It is called automatically on module import, but can be called again
-    to force a specific backend (e.g., force CPU).
+    初始化过程会重置后端状态，按 CUDA、Apple Metal、NumPy 的优先级探测，
+    并更新 ``xp`` 及状态描述。模块导入时会自动调用一次；命令行也可再次调用
+    并强制使用 CPU。
 
-    Order of preference: CuPy (CUDA) > PyTorch (MPS) > NumPy (CPU).
-
-    Parameters
-    ----------
-    force_cpu : bool
-        If True, bypasses GPU detection and forces the NumPy backend.
+    参数
+    ----
+    force_cpu:
+        为 True 时跳过 GPU 探测并强制选择 NumPy。
     """
     global xp, _USE_GPU, _USE_MPS, _BACKEND_INFO, _BACKEND_WARN
     global _BACKEND_SIMPLE_NAME, _MISSING_DEPS_PROMPT, torch, cp, _BACKEND_INITIALIZED
@@ -238,15 +257,19 @@ def initialize_backend(force_cpu: bool = False):
     _BACKEND_INITIALIZED = True
 
 def use_gpu() -> bool:
-    """Return *True* if CUDA GPU acceleration is active."""
+    """判断当前是否已启用 NVIDIA CUDA 加速后端。"""
     return _USE_GPU
 
 def use_mps() -> bool:
-    """Return *True* if MPS acceleration is active (Apple Metal)."""
+    """判断当前是否已启用 Apple Metal（MPS）加速后端。"""
     return _USE_MPS
 
 def to_device(arr: np.ndarray):
-    """Move a NumPy array to the current device (GPU if available)."""
+    """将 NumPy 数组转换为当前后端可计算的数组。
+
+    CUDA 使用 CuPy 数组；MPS 将数组复制到 Metal 设备，并在需要时将
+    float64 降为 float32；CPU 模式则原样返回输入数组。
+    """
     if _USE_GPU:
         return cp.asarray(arr)
     if _USE_MPS:
@@ -259,7 +282,11 @@ def to_device(arr: np.ndarray):
 
 
 def to_host(arr) -> np.ndarray:
-    """Move an array back to host (CPU) memory."""
+    """将设备数组复制回主机并转换为 NumPy 数组。
+
+    MPS 计算结果会从 float32 恢复为 NumPy 后续处理所需的 float64；
+    CPU 输入通过 ``numpy.asarray`` 规范为 NumPy 数组。
+    """
     if _USE_GPU:
         if hasattr(arr, "get"):
             return arr.get()
@@ -273,16 +300,21 @@ def to_host(arr) -> np.ndarray:
 
 
 def backend_name() -> str:
-    """Human-readable backend description."""
+    """返回当前计算后端的简短可读名称，例如 ``CPU`` 或 ``GPU (CUDA)``。"""
     return _BACKEND_SIMPLE_NAME
     
 def requires_dependency_prompt() -> bool:
-    """Return True if hardware was detected but the required library is missing or failed."""
+    """判断是否检测到 GPU 硬件但加速依赖缺失或初始化失败。"""
     return _MISSING_DEPS_PROMPT
 
 
 def print_backend_status(file=sys.stderr) -> None:
-    """Print a one-time status message about the computing backend.
+    """向指定输出流打印后端状态，并在 CPU 回退时附带可用警告。
+
+    参数
+    ----
+    file:
+        输出流对象，默认使用标准错误流。
     """
     print(f"  ✓ {_BACKEND_INFO}", file=file)
     if not (_USE_GPU or _USE_MPS) and _BACKEND_WARN:

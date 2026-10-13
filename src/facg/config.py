@@ -1,8 +1,8 @@
 """
-Configuration dataclass for FACG analysis.
+FACG 分析配置的数据类定义。
 
-All user-tuneable parameters live here, with sensible defaults that match
-the SigSpec conventions.
+集中声明用户可调整的分析参数及默认值。频率网格、停止条件、输入输出
+和绘图行为均由 :class:`FACGConfig` 管理，默认设置尽量与 SigSpec 约定一致。
 """
 
 from __future__ import annotations
@@ -14,62 +14,58 @@ from typing import Optional
 
 @dataclasses.dataclass
 class FACGConfig:
-    """Complete set of parameters controlling a FACG frequency analysis run.
+    """描述一次 FACG 频率分析所需的全部可配置参数。
 
     Parameters
     ----------
     input_file : str or Path
-        Path to the input time-series file (whitespace-delimited, no header,
-        col-0 = time, col-1 = observable).
+        输入时间序列文件路径。支持空白分隔且无表头的文本格式，默认第 0 列
+        为时间、第 1 列为观测值；其他格式和列号由读取模块处理。
     output_dir : str or Path or None
-        Directory to write output files.  When *None* a sub-directory
-        ``<stem>/`` next to the input file is created automatically.
+        结果文件输出目录。为 ``None`` 时，在输入文件旁自动创建以文件主名命名
+        的子目录。
     time_col : int
-        0-based column index for the time axis (default 0).
+        时间数据所在的零起始列号，默认为 0。
     data_col : int
-        0-based column index for the data axis (default 1).
+        观测值所在的零起始列号，默认为 1。
 
     Frequency grid
     ~~~~~~~~~~~~~~
     freq_low : float or None
-        Lower frequency limit (cycles/time-unit).
-        Default *None* → ``rayleigh / oversampling``.
+        频率下限，单位为每时间单位的周期数。为 ``None`` 时使用
+        ``rayleigh / oversampling``。
     freq_high : float or None
-        Upper frequency limit.
-        Default *None* → Nyquist frequency ``0.5 / median(Δt)``.
+        频率上限。为 ``None`` 时根据中位采样间隔采用 Nyquist 频率
+        ``0.5 / median(Δt)``。
     freq_step : float or None
-        Frequency grid step size.
-        Default *None* → ``rayleigh / oversampling``.
+        频率网格步长。为 ``None`` 时使用 ``rayleigh / oversampling``。
     nyquist_coeff : float
-        Nyquist coefficient (default 0.5).
+        计算 Nyquist 上限时使用的系数，默认为 0.5。
     oversampling : float
-        Oversampling ratio applied to Rayleigh resolution (default 20.0,
-        same as SigSpec).
+        应用于 Rayleigh 分辨率的过采样倍数，默认为 20.0，与 SigSpec 相同。
 
     Stopping criteria
     ~~~~~~~~~~~~~~~~~
     sig_limit : float
-        Significance threshold – iteration stops when the highest
-        significance drops below this value (default 5.0).
+        显著性阈值。当最高峰显著性低于此值时停止迭代，默认为 5.0。
     csig_limit : float
-        Cumulative significance limit (default 0 = disabled).
+        累积显著性停止阈值，默认为 0（禁用该停止条件）。
     max_iter : int
-        Maximum number of prewhitening iterations (default 999).
+        预白化迭代的最大次数，默认为 999。
 
     Output control
     ~~~~~~~~~~~~~~
     write_spectrum : bool
-        Write residual amplitude spectrum after each iteration (default True).
+        是否在每轮迭代后写出残差显著性/振幅频谱，默认为 True。
     write_residuals : bool
-        Write residual time-series after each iteration (default True).
+        是否在每轮迭代后写出残差时间序列，默认为 True。
     write_phase_diagram : bool
-        Write folded phase diagrams (default False).
+        是否为检测到的信号写出折叠相位图数据，默认为 False。
     plot : bool
-        Generate summary plots (time series, fitted signal, amplitude
-        spectrum, residual) and save as PNG.  Default False — plotting
-        is skipped to save time; enable with ``--plot`` on the CLI.
+        是否生成包含时间序列、拟合信号、振幅频谱和残差的汇总 PNG 图。
+        默认为 False；命令行可用 ``--plot`` 启用。
     quiet : bool
-        Suppress progress output (default False).
+        是否抑制运行进度信息，默认为 False。
     """
 
     # --- I/O ---------------------------------------------------------------
@@ -101,7 +97,16 @@ class FACGConfig:
     # Derived helpers (not set by user)
     # -----------------------------------------------------------------------
     def resolve_output_dir(self) -> Path:
-        """Return the concrete output directory, creating it if needed."""
+        """解析并创建本次分析的输出目录。
+
+        若配置了 ``output_dir``，直接使用该路径；否则在输入文件所在目录下
+        以输入文件主名作为目录名。目录不存在时会递归创建。
+
+        Returns
+        -------
+        Path
+            已确保存在的输出目录路径。
+        """
         if self.output_dir is not None:
             p = Path(self.output_dir)
         else:
